@@ -26,13 +26,13 @@
 
 * **Création** : On utilise des crochets `[]`.
 
-    * Exemple : `ma_liste = ["A", "B", "C"]`
+    Exemple : `ma_liste = ["A", "B", "C"]`
 
 * **L'Index (La règle d'or)** : En informatique, on compte à partir de **0**.
 
-    *`ma_liste[0]` est le 1er élément.
+    * `ma_liste[0]` est le 1er élément.
 
-    *`ma_liste[1]` est le 2ème élément.
+    * `ma_liste[1]` est le 2ème élément.
 
 * **Ajouter** : `.append("élément")` ajoute à la fin de la liste.
 
