@@ -22,4 +22,4 @@
 
 * **str()** : Transforme un nombre en texte ( avec le + ) (ex: 34 devient "34").
 
-* **git add . ; git commit -m "Texte" ; git push ** : Push global sur GitHub.
+* **`git add . ; git commit -m "Texte" ; git push`** : Push global sur GitHub.
