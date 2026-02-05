@@ -24,20 +24,20 @@
 
 * **`git add . ; git commit -m "Texte" ; git push`** : Push global sur GitHub.
 
-Création d'une liste : On utilise des crochets [].
+* **Création** : On utilise des crochets `[]`.
 
-Exemple : ma_liste = ["A", "B", "C"]
+    * Exemple : `ma_liste = ["A", "B", "C"]`
 
-L'Index (La règle d'or) : En informatique, on compte à partir de 0.
+* **L'Index (La règle d'or)** : En informatique, on compte à partir de **0**.
 
-ma_liste[0] est le 1er élément.
+    *`ma_liste[0]` est le 1er élément.
 
-ma_liste[1] est le 2ème élément.
+    *`ma_liste[1]` est le 2ème élément.
 
-Ajouter : .append("élément") ajoute à la fin de la liste.
+* **Ajouter** : `.append("élément")` ajoute à la fin de la liste.
 
-Supprimer : .pop(index) supprime l'élément à la position donnée et décale les autres.
+* **Supprimer** : `.pop(index)` supprime l'élément à la position donnée et décale les autres.
 
-Modifier : ma_liste[1] = "Nouveau" remplace l'élément à l'index 1.
+* **Modifier** : `ma_liste[1]` = "Nouveau" remplace l'élément à l'index 1.
 
-Mesurer : len(ma_liste) donne le nombre total d'éléments.
+* **Mesurer** : `len(ma_liste)` donne le nombre total d'éléments.
