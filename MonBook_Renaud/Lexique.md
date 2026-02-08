@@ -65,5 +65,3 @@
 - **Le f-string** : La méthode ultime pour afficher des variables proprement.
     - `f"Texte {ma_variable}"`
     - `{variable:.2f}` pour limiter les chiffres après la virgule
-
-    test adresse git
