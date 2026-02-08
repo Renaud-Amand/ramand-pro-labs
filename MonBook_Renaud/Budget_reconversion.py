@@ -9,15 +9,12 @@ epargne_dispo = (revenu_mensuelle - depense_mensuelle) * duree_formation
 resultat_final = epargne_dispo - reste_a_financer
 
 if resultat_final >= 0:
-    print("Votre projet est financable entièrement")
-else:
-    print(f"Votre projet n'est pas financable entièrement, il manque {abs(resultat_final)}")
-
-if resultat_final >= 0:
     print(f"--- ANALYSE SUR {duree_formation} MOIS EST VALIDE !---")
+    print("Votre projet est financable entièrement")
     print(f" Il te restera {resultat_final} € une fois le diplome en poche")
 else:
     print(f"Projet risqué sur {duree_formation} mois")
+    print(f"Votre projet n'est pas financable entièrement, il manque {abs(resultat_final)}")
     print(f"Il te manque {abs(resultat_final)} € au total")
 
 print("-" * duree_formation)
