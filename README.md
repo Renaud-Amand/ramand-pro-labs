@@ -1,7 +1,7 @@
 # 🚀 Renaud Amand | Architecte Système & Solutions Python
 > **Transformer la complexité technique en outils numériques performants.**
 
-Anciennement [Ton ancien métier/domaine], je mets aujourd'hui ma rigueur d'Architecte au service du développement Python. Je conçois des outils sur mesure pour automatiser des calculs complexes et analyser des données stratégiques.
+Conducteur poid lourds et anciennement Sapeur-Pompier, je mets aujourd'hui ma rigueur d'Architecte de l'IA au service du développement Python. Je conçois des outils sur mesure pour automatiser des calculs complexes et analyser des données stratégiques.
 
 ---
 
