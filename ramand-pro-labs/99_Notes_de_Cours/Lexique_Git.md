@@ -6,7 +6,7 @@
 
 ## *** Supprimer fichier sur Git ***
 
-* **`git add A-`** : Si le fichier est supprimé local alors supprimé sur cloud
+* **`git add -A`** : Si le fichier est supprimé local alors supprimé sur cloud
 
 * **`git rm -r --cached`** : Supprime uniquement sur Git même si fichier toujours local
 

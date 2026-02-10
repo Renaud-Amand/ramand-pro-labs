@@ -40,3 +40,4 @@ Anciennement [Ton ancien métier/domaine], je mets aujourd'hui ma rigueur d'Arch
 Pour discuter d'une collaboration ou de l'automatisation de vos flux de travail :
 
 [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/renaud-amand-5803283b0/)
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:ramand.pro@gmail.com)
