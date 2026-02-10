@@ -1,24 +1,30 @@
-# 🔬 ramand-pro-labs 
+# 🚀 Renaud Amand | Architecte Système & Solutions Python
+> **Transformer la complexité technique en outils numériques performants.**
 
-### Bienvenue dans mon laboratoire de développement Python
-Ce dépôt regroupe mes travaux de recherche, mes outils d'analyse et mes projets en cours de développement. En tant qu'**Architecte**, j'utilise ce garage numérique pour concevoir des solutions automatisées et explorer l'intelligence artificielle.
-
----
-
-## 🛠️ Mes Outils & Projets
-
-### 🏗️ Ingénierie & Calculs
-* **Simulateur :** Outils de simulation technique et calculs de paramètres.
-* **Analyse de Données :** Scripts de traitement d'informations et statistiques.
-* **Calculatrices Spécialisées :** Outils de conversion et d'optimisation (réductions, âge, etc.).
-
-### 🧠 Logique & Apprentissage
-* **Tests Logiques :** Exercices sur les structures de décision et les algorithmes.
-* **Labo IA :** (En construction) Projets dédiés à l'intégration de l'intelligence artificielle.
+Anciennement [Ton ancien métier/domaine], je mets aujourd'hui ma rigueur d'Architecte au service du développement Python. Je conçois des outils sur mesure pour automatiser des calculs complexes et analyser des données stratégiques.
 
 ---
 
-## 🚀 Technologies utilisées
+## 🛠️ Solutions Développées (Portfolio)
+
+### 🏗️ Ingénierie & Simulation
+* **Simulateur Technique (`Simulateur_vap.py`) :** Modélisation de flux et calculs de paramètres industriels.
+* **Analyseur de Données :** Automatisation du traitement de datasets pour l'aide à la décision.
+
+### ⚙️ Automatisation & Logique
+* **Suite d'outils de calcul :** Optimisation de processus (budgets, conversions, scoring).
+* **Labo R&D :** Recherche active sur l'intégration de l'IA dans les flux de travail "métier".
+
+---
+
+## 🎯 Pourquoi travailler avec moi ?
+- **Double Expertise :** La vision structurelle de l'architecte alliée à la puissance de Python.
+- **Approche Orientée Résultat :** Je ne crée pas de fichiers, je crée des outils qui font gagner du temps.
+- **Rigueur & Documentation :** Code propre, maintenable et documenté.
+
+---
+
+## 💻 Stack Technique
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 
@@ -27,3 +33,10 @@ Ce dépôt regroupe mes travaux de recherche, mes outils d'analyse et mes projet
 ## 📬 Contact & Veille
 * **Profil :** Renaud Amand
 * **Objectif :** Architecture Système & Intégration IA
+
+---
+
+## 📬 Me contacter
+Pour discuter d'une collaboration ou de l'automatisation de vos flux de travail :
+
+[![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/renaud-amand-5803283b0/)
