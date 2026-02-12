@@ -25,30 +25,9 @@
 
 - **`git add . ; git commit -m "Texte" ; git push`** : Push global sur GitHub.
 
-- **Création** : On utilise des crochets `[]`.
-
-    - Exemple : `ma_liste = ["A", "B", "C"]`
-
-- **L'Index (La règle d'or)** : En informatique, on compte à partir de **0**.
-
-    - `ma_liste[0]` est le 1er élément.
-    - `ma_liste[1]` est le 2ème élément.
-
-- **Ajouter** : `.append("élément")` ajoute à la fin de la liste.
-
-- **Insérer** : `.insert()`insérer un élement a un endroit précis.
-
-- **Ajouters** : `.extend()` ajouter plusieurs élements.
-
-- **Supprimer** : `.pop(index)` supprime l'élément à la position donnée et décale les autres.
-
-- **Modifier** : `ma_liste[1]` = "Nouveau" remplace l'élément à l'index 1.
-
-- **Mesurer** : `len(ma_liste)` donne le nombre total d'éléments.
 ---
-###📋 `Les listes et fonctions de base`
+###📋 `Les fonctions de base`
 ---
-- **Liste** : Une structure de données qui permet de stocker plusieurs éléments (nombres, chaînes de caractères, etc.) dans une seule variable, délimités par des crochets `[]`.
 
 - **Index** : Le numéro de position d'un élément dans une liste. Attention : le premier élément est toujours à l'index **`0`**.
 
@@ -69,3 +48,43 @@
 - **Le f-string** : La méthode ultime pour afficher des variables proprement.
     - `f"Texte {ma_variable}"`
     - `{variable:.2f}` pour limiter les chiffres après la virgule
+
+---
+#### `Les listes`
+---
+- **Liste** : Une structure de données qui permet de stocker plusieurs éléments (nombres, chaînes de caractères, etc.) dans une seule variable, délimités par des crochets `[]`.
+
+- **Création** : On utilise des crochets `[]`.
+
+    - Exemple : `ma_liste = ["A", "B", "C"]`
+
+- **L'Index (La règle d'or)** : En informatique, on compte à partir de **0**.
+
+    - `ma_liste[0]` est le 1er élément.
+    - `ma_liste[1]` est le 2ème élément.
+
+- **Ajouter** : `.append("élément")` ajoute à la fin de la liste.
+
+- **Insérer** : `.insert()`insérer un élement a un endroit précis.
+
+- **Ajouters** : `.extend()` ajouter plusieurs élements.
+
+- **Supprimer** : `.pop(index)` supprime l'élément à la position donnée et décale les autres.
+
+- **Modifier** : `ma_liste[1]` = "Nouveau" remplace l'élément à l'index 1.
+
+- **Mesurer** : `len(ma_liste)` donne le nombre total d'éléments.
+
+- **Supprimer** : `.remove()`supprime un élement spécifique de sa valeur.
+
+- **Supprimer et renvoyer** : .pop()`Supprimer et renvoyer un élement par sa position.
+
+- **Delete all** : `.clear()`supprimer tous les élements d'une liste.
+    --- Supprime que la première occurence de la valeur même si deux élements identiques dans listes ---
+
+- `clear()`: supprime la liste existante
+
+- `clear[]`: créer une deuxième liste vide
+
+- **`remove()`** fonctionne avec des valeurs ("exemple") alors que **`.pop()`** supprime avec une position (index)
+
