@@ -11,7 +11,7 @@
 # 🎂 Projet Alpha-B (Spécial Anniversaire)
 
 ## 🎯 Objectif
-Créer un jeu interactif pour aider ma fille à apprendre les lettres.
+Créer un jeu interactif pour aider ma fille à apprendre les lettres et chiffres.
 
 ## 🛠️ Stack Technique
 - Langage : Python 3.13
@@ -19,8 +19,8 @@ Créer un jeu interactif pour aider ma fille à apprendre les lettres.
 
 ## 🗺️ Roadmap
 ### Phase 1 : Fondations (Aujourd'hui)
-- [ ] Installation environnement (Python + Pygame)
-- [ ] Fenêtre de jeu 800x600 avec couleur de fond
+- [X] Installation environnement (Python + Pygame)
+- [X] Fenêtre de jeu 800x600 avec couleur de fond
 - [ ] Affichage de la première lettre géante
 
 ### Phase 2 : Interaction
