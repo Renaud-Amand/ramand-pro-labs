@@ -15,3 +15,4 @@ for niveau in niveaux_puissance:
 
 
 print("---" * 3)
+
