@@ -19,11 +19,16 @@ bleu_roi = (65, 105, 225)
 blanc = (255, 255, 255)
 gris_ombre = (100, 100, 100)
 
+# --- COULEURS DÉGRADÉ ---
+couleur_bleu_ciel = (160, 210, 255)
+couleur_rose_pastel = (255, 190, 210)
+
 class GameState(Enum):
     """
     Définit les différents états possibles de l'application.
     Utiliser un Enum permet d'éviter les erreurs de frappe et rend le code plus lisible.
     """
+    SPLASH            = auto() # Écran de démarrage
     START             = auto() # Écran d'accueil
     PLAYING_QUESTION  = auto() # Affiche uniquement la lettre
     PLAYING_HINT      = auto() # Affiche lettre + image + mot + son
@@ -177,6 +182,11 @@ class GameApp:
         self.session_discovered = 0
         self.items_decouverts_session = set() # Pour ne pas compter 2 fois la même lettre
         
+        # Pré-rendu du dégradé (Optimisation Performance : évite de le dessiner pixel par pixel chaque frame)
+        self.gradient_bg = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.draw_vertical_gradient(self.gradient_bg, couleur_bleu_ciel, couleur_rose_pastel)
+        self.gradient_bg = self.gradient_bg.convert()
+
         # Particules (Confettis) et Sons Spéciaux
         self.confettis = []
         self.celebration_sound = self.assets.get_sound("assets/sounds/effects/fireworks.mp3")
@@ -189,39 +199,34 @@ class GameApp:
         h = SCREEN_HEIGHT
         try:
             self.police_geante = pygame.font.SysFont("Comic Sans MS", int(h * 0.7))
+            self.police_titre  = pygame.font.SysFont("Comic Sans MS", int(h * 0.4))
             self.police_moyenne = pygame.font.SysFont("Comic Sans MS", int(h * 0.12))
             self.police_petite = pygame.font.SysFont("Comic Sans MS", int(h * 0.05))
         except:
             self.police_geante = pygame.font.SysFont("Arial", int(h * 0.5))
+            self.police_titre  = pygame.font.SysFont("Arial", int(h * 0.3))
             self.police_moyenne = pygame.font.SysFont("Arial", int(h * 0.10))
             self.police_petite = pygame.font.SysFont("Arial", int(h * 0.04))
 
-        # On ne charge rien au départ, on attend le choix au menu (START)
+        # État initial : Splash Screen
+        self.changer_etat(GameState.SPLASH)
 
     def charger_contenu(self, type_demande):
         """Récupère, filtre et mélange les données pour une SESSION UNIQUE."""
-        self.mode_actuel = type_demande
         print(f"🔍 Chargement du mode : {type_demande}...")
+        data = self.db.get_educational_content(type_demande)
         
-        db_data = self.db.get_educational_content(content_type=type_demande)
-        
-        if db_data:
-            self.current_session_data = db_data
-        else:
-            # Fallback local minimal
-            if type_demande == "letter":
-                self.current_session_data = [
-                    {"content": "A", "word": "Avion", "image_url": "avion.png", "sound_url": "avion.mp3"},
-                    {"content": "B", "word": "Ballon", "image_url": "ballon.png", "sound_url": "ballon.mp3"}
-                ]
-            else:
-                self.current_session_data = [
-                    {"content": "1", "word": "Un", "image_url": "1.png", "sound_url": "1.mp3"},
-                    {"content": "2", "word": "Deux", "image_url": "2.png", "sound_url": "2.mp3"}
-                ]
+        if not data:
+            print(f"⚠️ Aucun contenu trouvé pour {type_demande} !")
+            self.current_session_data = []
+            return
 
         # LOGIQUE DE MÉLANGE UNIQUE (RNG)
-        random.shuffle(self.current_session_data)
+        random.shuffle(data)
+        self.current_session_data = data
+        self.mode_actuel = type_demande
+        self.current_index = 0
+        
         print(f"✅ Mode {type_demande} chargé : {len(self.current_session_data)} éléments mélangés pour cette session.")
 
         # Pré-chargement sélectif (Images seulement pour alphabet)
@@ -233,9 +238,14 @@ class GameApp:
         self.assets.preload_assets(images, sounds)
 
         # Initialisation de la session
-        self.current_index = 0
         self.session_discovered = 0
         self.items_decouverts_session.clear()
+        
+        # Préparer le premier arrière-plan
+        if len(self.current_session_data) > 0:
+            item = self.current_session_data[self.current_index]
+            self.preparer_arriere_plan(item.get("image_url"))
+            
         self.changer_etat(GameState.PLAYING_QUESTION)
 
     def changer_etat(self, nouvel_etat):
@@ -313,8 +323,13 @@ class GameApp:
                     self.running = False
 
     def update(self):
-        """Machine à états avec cascade temporelle d'indices."""
-        if self.etat == GameState.PLAYING_QUESTION:
+        """Mise à jour de la logique du jeu."""
+        if self.etat == GameState.SPLASH:
+            # Transition automatique après 3 secondes (3000ms)
+            if pygame.time.get_ticks() - self.state_start_time > 3000:
+                self.changer_etat(GameState.START)
+        
+        elif self.etat == GameState.PLAYING_QUESTION:
             elapsed_time = pygame.time.get_ticks() - self.state_start_time
             
             # 1. Déclenchement unique du SON (T+2s)
@@ -380,7 +395,8 @@ class GameApp:
         overlay.set_alpha(120) # ~50% d'opacité
         bg.blit(overlay, (0, 0))
 
-        self.current_background = bg
+        # 4. Optimisation finale : On convertit pour le format d'affichage (Ultra-important pour la vitesse de blit)
+        self.current_background = bg.convert()
 
     def draw_text_flat(self, text, font, color, center_pos, outline_color=None, outline_width=5):
         """Affiche un texte net. Si outline_color est fourni, dessine un contour."""
@@ -414,15 +430,86 @@ class GameApp:
             # Texte du mot centré dans le bandeau
             self.draw_text_flat(word, self.police_moyenne, blanc, (SCREEN_WIDTH // 2, SCREEN_HEIGHT - (banner_h // 2)))
 
+    def draw_vertical_gradient(self, surface, color_top, color_bottom):
+        """Dessine un dégradé vertical sur la surface donnée."""
+        h = surface.get_height()
+        w = surface.get_width()
+        for y in range(h):
+            # Mixage linéaire des couleurs
+            r = color_top[0] + (color_bottom[0] - color_top[0]) * y / h
+            g = color_top[1] + (color_bottom[1] - color_top[1]) * y / h
+            b = color_top[2] + (color_bottom[2] - color_top[2]) * y / h
+            pygame.draw.line(surface, (int(r), int(g), int(b)), (0, y), (w, y))
+
+    def draw_stylized_title(self, text, center_pos):
+        """Affichage du titre 'Charlène' avec des lettres multicolores et un effet bulle."""
+        # Couleurs inspirées de l'image de référence (Pastels vibrants)
+        colors = [
+            (230, 80, 150),  # Rose/Magenta
+            (255, 160, 60),  # Orange
+            (160, 100, 200), # Violet
+            (80, 180, 230),  # Bleu ciel
+            (255, 210, 50),  # Jaune
+            (230, 80, 150),  # Rose
+            (144, 238, 144), # Vert clair
+            (255, 127, 80)   # Corail
+        ]
+        
+        # On découpe le texte pour dessiner chaque lettre séparément
+        total_w = 0
+        surfaces = []
+        for i, char in enumerate(text):
+            color = colors[i % len(colors)]
+            # On utilise la police_titre pour un meilleur ajustement
+            char_surf = self.police_titre.render(char, True, color)
+            surfaces.append(char_surf)
+            total_w += char_surf.get_width() - 15 # Léger chevauchement
+        
+        # Dessin centré
+        curr_x = center_pos[0] - total_w // 2
+        for char_surf in surfaces:
+            # 1. Contour blanc épais (effet stickers)
+            rect = char_surf.get_rect(center=(curr_x + char_surf.get_width() // 2, center_pos[1]))
+            # On dessine le contour
+            for dx, dy in [(-4,-4), (4,-4), (-4,4), (4,4), (0,-6), (0,6), (-6,0), (6,0)]:
+                self.screen.blit(self.police_titre.render(text[surfaces.index(char_surf)], True, blanc), (rect.x + dx, rect.y + dy))
+            
+            # 2. Lettre colorée
+            self.screen.blit(char_surf, rect)
+            curr_x += char_surf.get_width() - 15
+
     def draw(self):
-        """Rendu visuel selon l'état actuel."""
-        # Fond de base (Rose) ou Arrière-plan préparé
-        if self.etat in [GameState.PLAYING_QUESTION, GameState.PLAYING_HINT] and self.current_background:
+        """Rendu visuel optimisé."""
+        # 1. Dessiner le Fond (Couche la plus basse)
+        if self.etat in [GameState.SPLASH, GameState.START, GameState.CELEBRATION]:
+            self.screen.blit(self.gradient_bg, (0, 0))
+        elif self.current_background:
             self.screen.blit(self.current_background, (0, 0))
         else:
             self.screen.fill(fond_rose)
         
-        if self.etat == GameState.START:
+        if self.etat == GameState.SPLASH:
+            # 1. Titre stylisé 'Charlène'
+            self.draw_stylized_title("Charlène", (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 50))
+            
+            # 2. Texte 'Chargement...'
+            self.draw_text_flat("Chargement...", self.police_petite, (80, 80, 80), (SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.78))
+            
+            # 3. Barre de progression dynamique (White Glossy style)
+            elapsed = pygame.time.get_ticks() - self.state_start_time
+            progress = min(elapsed / 3000, 1.0)
+            
+            bar_w, bar_h = 700, 40
+            bar_x = (SCREEN_WIDTH - bar_w) // 2
+            bar_y = SCREEN_HEIGHT * 0.85
+            
+            # Contour et fond
+            pygame.draw.rect(self.screen, blanc, (bar_x, bar_y, bar_w, bar_h), 4, border_radius=20)
+            # Remplissage
+            if progress > 0.02:
+                pygame.draw.rect(self.screen, blanc, (bar_x + 8, bar_y + 8, (bar_w - 16) * progress, bar_h - 16), border_radius=15)
+
+        elif self.etat == GameState.START:
             self.draw_text_flat("Menu Charlène", self.police_moyenne, bleu_roi, (SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.2))
             
             # Espacement aéré entre les options

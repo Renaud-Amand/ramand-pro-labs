@@ -12,17 +12,28 @@ class DBManager:
     """
     
     def __init__(self):
+        # Vérification préventive du fichier .env
+        if not os.path.exists(".env"):
+            print("❌ ERREUR CRITIQUE : Fichier .env manquant !")
+            print("Veuillez créer un fichier .env avec SUPABASE_URL et SUPABASE_KEY.")
+            self.client = None
+            return
+
         # Récupération des secrets depuis le fichier .env
         self.url = os.getenv("SUPABASE_URL")
         self.key = os.getenv("SUPABASE_KEY")
         
         if not self.url or not self.key:
-            print("⚠️ Erreur : SUPABASE_URL ou SUPABASE_KEY manquants dans le .env")
+            print("⚠️ Erreur : SUPABASE_URL ou SUPABASE_KEY vides ou incorrects dans le .env.")
             self.client = None
         else:
-            # Initialisation du client Supabase
-            self.client: Client = create_client(self.url, self.key)
-            print("✅ Client Supabase initialisé avec succès.")
+            try:
+                # Initialisation du client Supabase
+                self.client: Client = create_client(self.url, self.key)
+                print("✅ Client Supabase connecté avec succès.")
+            except Exception as e:
+                print(f"❌ Impossible de se connecter à Supabase : {e}")
+                self.client = None
 
     def get_educational_content(self, content_type: str = None):
         """
