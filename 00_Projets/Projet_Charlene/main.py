@@ -4,6 +4,10 @@ import random
 from enum import Enum, auto
 from db_manager import DBManager
 
+# --- CONFIGURATION ÉCRAN ---
+SCREEN_WIDTH  = 1920
+SCREEN_HEIGHT = 1080
+
 # --- CONFIGURATION DES DÉLAIS (ms) ---
 DELAY_SOUND = 2000    # T+2s : Son de la lettre
 DELAY_WORD  = 5000    # T+5s : Apparition du mot
@@ -13,6 +17,7 @@ DELAY_IMAGE = 10000   # T+10s : Apparition de l'image
 fond_rose = (255, 240, 245)
 bleu_roi = (65, 105, 225)
 blanc = (255, 255, 255)
+gris_ombre = (100, 100, 100)
 
 class GameState(Enum):
     """
@@ -35,6 +40,10 @@ class ConfettiParticle:
         self.speed_x = random.uniform(-2, 2)
         self.rotation = random.randint(0, 360)
         self.rot_speed = random.randint(2, 10)
+        
+        # Performance : On pré-rend une surface pour éviter de le faire dans draw()
+        self.base_surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
+        self.base_surf.fill(self.color)
 
     def update(self):
         self.y += self.speed_y
@@ -42,12 +51,11 @@ class ConfettiParticle:
         self.rotation += self.rot_speed
 
     def draw(self, screen):
-        # Création d'une surface pour la rotation
-        surf = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
-        surf.fill(self.color)
-        rotated_surf = pygame.transform.rotate(surf, self.rotation)
-        rect = rotated_surf.get_rect(center=(int(self.x), int(self.y)))
-        screen.blit(rotated_surf, rect)
+        # Optimisation : On n'affiche que si c'est visible à l'écran
+        if -50 < self.x < SCREEN_WIDTH + 50 and -50 < self.y < SCREEN_HEIGHT + 50:
+            rotated_surf = pygame.transform.rotate(self.base_surf, self.rotation)
+            rect = rotated_surf.get_rect(center=(int(self.x), int(self.y)))
+            screen.blit(rotated_surf, rect)
 
 class AssetManager:
     """
@@ -94,12 +102,19 @@ class AssetManager:
         """Charge un son depuis assets/sounds/ avec cache et protection."""
         if not filename: return None
         
-        clean_name = os.path.basename(filename).lower()
+        # 1. On tente d'abord d'utiliser le chemin tel quel (depuis la DB)
+        # On vérifie si c'est un chemin qui existe
+        if os.path.exists(filename):
+            path = filename
+            clean_name = filename.lower()
+        else:
+            # 2. Fallback historique : on cherche dans assets/sounds/ via le basename
+            clean_name = os.path.basename(filename).lower()
+            path = os.path.join("assets", "sounds", clean_name)
         
         if clean_name in self._sounds:
             return self._sounds[clean_name]
         
-        path = os.path.join("assets", "sounds", clean_name)
         try:
             if os.path.exists(path):
                 sound = pygame.mixer.Sound(path)
@@ -135,7 +150,11 @@ class GameApp:
     def __init__(self):
         pygame.init()
         pygame.mixer.init()
-        self.screen = pygame.display.set_mode((1240, 960))
+        # Full HD avec optimisation matérielle et mode sans bordure (NOFRAME)
+        self.screen = pygame.display.set_mode(
+            (SCREEN_WIDTH, SCREEN_HEIGHT), 
+            pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.NOFRAME
+        )
         pygame.display.set_caption("Alphabet Kids - Charlène")
         
         # Assets et Données
@@ -158,18 +177,24 @@ class GameApp:
         self.session_discovered = 0
         self.items_decouverts_session = set() # Pour ne pas compter 2 fois la même lettre
         
-        # Particules (Confettis)
+        # Particules (Confettis) et Sons Spéciaux
         self.confettis = []
+        self.celebration_sound = self.assets.get_sound("assets/sounds/effects/fireworks.mp3")
+        self.fireworks_played = False
 
-        # Polices (Robustesse)
+        # Arrière-plan Immersif
+        self.current_background = None
+
+        # Polices Dynamiques (Ratio de SCREEN_HEIGHT)
+        h = SCREEN_HEIGHT
         try:
-            self.police_geante = pygame.font.SysFont("Comic Sans MS", 350)
-            self.police_moyenne = pygame.font.SysFont("Comic Sans MS", 100)
-            self.police_petite = pygame.font.SysFont("Comic Sans MS", 50)
+            self.police_geante = pygame.font.SysFont("Comic Sans MS", int(h * 0.7))
+            self.police_moyenne = pygame.font.SysFont("Comic Sans MS", int(h * 0.12))
+            self.police_petite = pygame.font.SysFont("Comic Sans MS", int(h * 0.05))
         except:
-            self.police_geante = pygame.font.SysFont("Arial", 250)
-            self.police_moyenne = pygame.font.SysFont("Arial", 80)
-            self.police_petite = pygame.font.SysFont("Arial", 40)
+            self.police_geante = pygame.font.SysFont("Arial", int(h * 0.5))
+            self.police_moyenne = pygame.font.SysFont("Arial", int(h * 0.10))
+            self.police_petite = pygame.font.SysFont("Arial", int(h * 0.04))
 
         # On ne charge rien au départ, on attend le choix au menu (START)
 
@@ -214,10 +239,19 @@ class GameApp:
         self.changer_etat(GameState.PLAYING_QUESTION)
 
     def changer_etat(self, nouvel_etat):
-        """Change l'état, réinitialise le timer et le drapeau de son."""
+        """Change l'état, réinitialise le timer et gère les ressources de l'état."""
         self.etat = nouvel_etat
         self.state_start_time = pygame.time.get_ticks()
         self.sound_played = False
+        
+        # Reset celebration sound trigger
+        if nouvel_etat != GameState.CELEBRATION:
+            self.fireworks_played = False
+
+        # Préparation du background si on change d'élément (PLAYING_QUESTION)
+        if nouvel_etat == GameState.PLAYING_QUESTION:
+            item = self.current_session_data[self.current_index]
+            self.preparer_arriere_plan(item.get("image_url"))
 
     def handle_events(self):
         """Gère les entrées clavier pour la navigation et l'interaction."""
@@ -261,8 +295,8 @@ class GameApp:
                     else:
                         self.changer_etat(GameState.CELEBRATION)
                         # On génère les premières particules
-                        for _ in range(100):
-                            self.confettis.append(ConfettiParticle(random.randint(0, 1240), random.randint(-500, 0)))
+                        for _ in range(150):
+                            self.confettis.append(ConfettiParticle(random.randint(0, SCREEN_WIDTH), random.randint(-800, 0)))
                 
                 # 3. Flèche GAUCHE : Retour (avec sécurité)
                 elif event.key == pygame.K_LEFT:
@@ -307,74 +341,123 @@ class GameApp:
 
         elif self.etat == GameState.CELEBRATION:
             # Animation des confettis
-            if len(self.confettis) < 150: # On en rajoute pour la pluie continue
-                self.confettis.append(ConfettiParticle(random.randint(0, 1240), -20))
+            if len(self.confettis) < 200: # Plus de particules pour 1080p
+                self.confettis.append(ConfettiParticle(random.randint(0, SCREEN_WIDTH), -20))
             
+            # Son de feu d'artifice unique
+            if not self.fireworks_played:
+                if self.celebration_sound:
+                    self.celebration_sound.play()
+                self.fireworks_played = True
+
             for p in self.confettis[:]:
                 p.update()
-                if p.y > 1000:
+                if p.y > SCREEN_HEIGHT + 50:
                     self.confettis.remove(p)
 
+    def preparer_arriere_plan(self, image_file):
+        """Prépare une version floutée et sombre de l'image de fond (une seule fois)."""
+        if not image_file or self.mode_actuel != "letter":
+            self.current_background = None
+            return
+
+        img = self.assets.get_image(image_file)
+        if not img or img == self.assets._placeholder_img:
+            self.current_background = None
+            return
+
+        # 1. Mise à l'échelle pour couvrir l'écran (Scale to Fill)
+        bg = pygame.transform.smoothscale(img, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        
+        # 2. Effet de flou (Technique rapide : Scale down puis scale up)
+        blur_factor = 10
+        small = pygame.transform.smoothscale(bg, (SCREEN_WIDTH // blur_factor, SCREEN_HEIGHT // blur_factor))
+        bg = pygame.transform.smoothscale(small, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+        # 3. Assombrissement (Overlay noir 50%)
+        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(120) # ~50% d'opacité
+        bg.blit(overlay, (0, 0))
+
+        self.current_background = bg
+
+    def draw_text_flat(self, text, font, color, center_pos, outline_color=None, outline_width=5):
+        """Affiche un texte net. Si outline_color est fourni, dessine un contour."""
+        if outline_color:
+            # Dessin du contour par décalage (8 directions pour un effet gras et complet)
+            for dx, dy in [(-1, -1), (-1, 1), (1, -1), (1, 1), (0, -1), (0, 1), (-1, 0), (1, 0)]:
+                # On multiplie par outline_width pour bien voir le halo
+                off_surface = font.render(str(text), True, outline_color)
+                off_rect = off_surface.get_rect(center=(center_pos[0] + dx * outline_width, center_pos[1] + dy * outline_width))
+                self.screen.blit(off_surface, off_rect)
+
+        # Dessin du texte principal
+        text_surface = font.render(str(text), True, color)
+        text_rect = text_surface.get_rect(center=center_pos)
+        self.screen.blit(text_surface, text_rect)
+
     def draw_letter(self, content):
-        """Affiche la lettre géante au centre."""
-        surface = self.police_geante.render(str(content), True, bleu_roi)
-        rect = surface.get_rect(center=(620, 480))
-        self.screen.blit(surface, rect)
+        """Affiche la lettre géante noire avec un halo blanc pour le contraste."""
+        self.draw_text_flat(content, self.police_geante, (0, 0, 0), (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), outline_color=blanc, outline_width=6)
 
-    def draw_hint(self, word, image_file, elapsed_time):
-        """Affiche les indices progressivement selon les paliers atteints."""
-        # Palier 2 (T+5s) : Affichage du MOT
+    def draw_hint(self, word, elapsed_time):
+        """Affiche le mot en bas sur un bandeau plus fin et élégant."""
         if word and elapsed_time > DELAY_WORD:
-            surface_mot = self.police_moyenne.render(word, True, bleu_roi)
-            rect_mot = surface_mot.get_rect(centerx=620, bottom=910)
-            self.screen.blit(surface_mot, rect_mot)
+            # Bandeau de lisibilité plus fin (12% de la hauteur)
+            banner_h = int(SCREEN_HEIGHT * 0.12)
+            banner_surf = pygame.Surface((SCREEN_WIDTH, banner_h))
+            banner_surf.fill((0, 0, 0))
+            banner_surf.set_alpha(120)
+            self.screen.blit(banner_surf, (0, SCREEN_HEIGHT - banner_h))
 
-        # Palier 3 (T+10s) : Affichage de l'IMAGE (Seulement en mode Lettres)
-        if self.mode_actuel == "letter" and image_file and elapsed_time > DELAY_IMAGE:
-            img = self.assets.get_image(image_file)
-            if img:
-                img_rect = img.get_rect(center=(620, 200))
-                self.screen.blit(img, img_rect)
+            # Texte du mot centré dans le bandeau
+            self.draw_text_flat(word, self.police_moyenne, blanc, (SCREEN_WIDTH // 2, SCREEN_HEIGHT - (banner_h // 2)))
 
     def draw(self):
         """Rendu visuel selon l'état actuel."""
-        self.screen.fill(fond_rose)
+        # Fond de base (Rose) ou Arrière-plan préparé
+        if self.etat in [GameState.PLAYING_QUESTION, GameState.PLAYING_HINT] and self.current_background:
+            self.screen.blit(self.current_background, (0, 0))
+        else:
+            self.screen.fill(fond_rose)
         
         if self.etat == GameState.START:
-            titre = self.police_moyenne.render("Menu Charlène", True, bleu_roi)
-            self.screen.blit(titre, titre.get_rect(center=(620, 250)))
+            self.draw_text_flat("Menu Charlène", self.police_moyenne, bleu_roi, (SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.2))
+            
+            # Espacement aéré entre les options
+            self.draw_text_flat("1 - Alphabet (Mélangé)", self.police_moyenne, (100, 100, 200), (SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.45))
+            self.draw_text_flat("2 - Chiffres (Mélangé)", self.police_moyenne, (200, 100, 100), (SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.6))
 
-            opt1 = self.police_moyenne.render("1 - Alphabet (Mélangé)", True, (100, 100, 200))
-            self.screen.blit(opt1, opt1.get_rect(center=(620, 450)))
-
-            opt2 = self.police_moyenne.render("2 - Chiffres (Mélangé)", True, (200, 100, 100))
-            self.screen.blit(opt2, opt2.get_rect(center=(620, 600)))
-
-            # RECORD
-            txt_stats = self.police_petite.render(f"Bravo ! Tu as déjà découvert {self.total_discovered} secrets !", True, bleu_roi)
-            self.screen.blit(txt_stats, txt_stats.get_rect(center=(620, 800)))
+            txt_stats = f"Bravo ! Tu as déjà découvert {self.total_discovered} secrets !"
+            self.draw_text_flat(txt_stats, self.police_petite, bleu_roi, (SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.85))
             
         elif self.etat in [GameState.PLAYING_QUESTION, GameState.PLAYING_HINT]:
             elapsed_time = pygame.time.get_ticks() - self.state_start_time
             item = self.current_session_data[self.current_index]
+            
+            # La lettre est toujours là
             self.draw_letter(item.get("content", "?"))
             
-            # draw_hint est appelé en continu et gère sa visibilité via elapsed_time
-            self.draw_hint(item.get("word"), item.get("image_url"), elapsed_time)
+            # L'indice (mot + bandeau) apparaît selon le timer
+            self.draw_hint(item.get("word"), elapsed_time)
                 
         elif self.etat == GameState.CELEBRATION:
             # Pluie de confettis
             for p in self.confettis:
                 p.draw(self.screen)
             
-            surface = self.police_geante.render("BRAVO !", True, (255, 0, 100))
-            self.screen.blit(surface, surface.get_rect(center=(620, 400)))
+            # Texte de victoire équilibré
+            # On utilise une taille intermédiaire pour "BRAVO!" (environ 30% de la hauteur)
+            font_bravo = pygame.font.SysFont("Comic Sans MS", int(SCREEN_HEIGHT * 0.35))
+            self.draw_text_flat("BRAVO !", font_bravo, (255, 0, 100), (SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.35))
 
-            txt_score = self.police_moyenne.render(f"+{self.session_discovered} aujourd'hui ! Quel score !", True, bleu_roi)
-            self.screen.blit(txt_score, txt_score.get_rect(center=(620, 700)))
+            # Score descendu vers le bas
+            txt_score = f"+{self.session_discovered} aujourd'hui ! Quel score !"
+            self.draw_text_flat(txt_score, self.police_moyenne, bleu_roi, (SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.75))
 
-            txt_retour = self.police_petite.render("Appuie sur ESPACE pour recommencer", True, (100, 100, 100))
-            self.screen.blit(txt_retour, txt_retour.get_rect(center=(620, 850)))
+            # Instruction de retour tout en bas
+            self.draw_text_flat("Appuie sur ESPACE pour recommencer", self.police_petite, (100, 100, 100), (SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.94))
 
         pygame.display.flip()
 

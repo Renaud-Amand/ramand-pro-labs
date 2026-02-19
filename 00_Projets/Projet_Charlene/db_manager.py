@@ -44,8 +44,19 @@ class DBManager:
             # Exécution de la requête
             response = query.execute()
             
-            # Tri : Lettres d'abord (A-Z), puis Chiffres (0-9)
-            data = sorted(response.data, key=lambda x: (0 if x["type"] == "letter" else 1, x["content"]))
+            # Tri intelligent : 
+            # 1. Type ('letter' avant 'number')
+            # 2. Contenu (numérique si possible, sinon alphabétique)
+            def sort_key(x):
+                t_val = 0 if x["type"] == "letter" else 1
+                content = x["content"]
+                try:
+                    # Si c'est un nombre, on trie numériquement
+                    return (t_val, int(content), content)
+                except (ValueError, TypeError):
+                    return (t_val, float('inf'), content)
+
+            data = sorted(response.data, key=sort_key)
             
             return data
             
