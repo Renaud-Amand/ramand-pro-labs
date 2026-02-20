@@ -1,0 +1,184 @@
+[
+    {
+        "content": "A",
+        "word": "Avion",
+        "image_url": "images/Avion.png",
+        "sound_url": "assets/sounds/letters/A.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "B",
+        "word": "Ballon",
+        "image_url": "images/Ballon.png",
+        "sound_url": "assets/sounds/letters/B.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "C",
+        "word": "Chat",
+        "image_url": "images/Chat.png",
+        "sound_url": "assets/sounds/letters/C.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "D",
+        "word": "Dauphin",
+        "image_url": "images/Dauphin.png",
+        "sound_url": "assets/sounds/letters/D.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "E",
+        "word": "Etoile",
+        "image_url": "images/Etoile.png",
+        "sound_url": "assets/sounds/letters/E.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "F",
+        "word": "Fleur",
+        "image_url": "images/Fleur.png",
+        "sound_url": "assets/sounds/letters/F.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "G",
+        "word": "Gourde",
+        "image_url": "images/Gourde.png",
+        "sound_url": "assets/sounds/letters/G.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "H",
+        "word": "Hibou",
+        "image_url": "images/Hibou.png",
+        "sound_url": "assets/sounds/letters/H.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "I",
+        "word": "Ile",
+        "image_url": "images/Ile.png",
+        "sound_url": "assets/sounds/letters/I.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "J",
+        "word": "Jardin",
+        "image_url": "images/Jardin.png",
+        "sound_url": "assets/sounds/letters/J.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "K",
+        "word": "Kangourou",
+        "image_url": "images/Kangourou.png",
+        "sound_url": "assets/sounds/letters/K.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "L",
+        "word": "Lion",
+        "image_url": "images/Lion.png",
+        "sound_url": "assets/sounds/letters/L.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "M",
+        "word": "Maison",
+        "image_url": "images/Maison.png",
+        "sound_url": "assets/sounds/letters/M.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "N",
+        "word": "Nuage",
+        "image_url": "images/Nuage.png",
+        "sound_url": "assets/sounds/letters/N.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "O",
+        "word": "Oiseau",
+        "image_url": "images/Oiseau.png",
+        "sound_url": "assets/sounds/letters/O.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "P",
+        "word": "Poisson",
+        "image_url": "images/Poisson.png",
+        "sound_url": "assets/sounds/letters/P.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "Q",
+        "word": "Quille",
+        "image_url": "images/Quille.png",
+        "sound_url": "assets/sounds/letters/Q.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "R",
+        "word": "Robot",
+        "image_url": "images/Robot.png",
+        "sound_url": "assets/sounds/letters/R.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "S",
+        "word": "Soleil",
+        "image_url": "images/Soleil.png",
+        "sound_url": "assets/sounds/letters/S.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "T",
+        "word": "Tortue",
+        "image_url": "images/Tortue.png",
+        "sound_url": "assets/sounds/letters/T.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "U",
+        "word": "Univers",
+        "image_url": "images/Univers.png",
+        "sound_url": "assets/sounds/letters/U.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "V",
+        "word": "Velo",
+        "image_url": "images/Velo.png",
+        "sound_url": "assets/sounds/letters/V.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "W",
+        "word": "Wagon",
+        "image_url": "images/Wagon.png",
+        "sound_url": "assets/sounds/letters/W.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "X",
+        "word": "Xylophone",
+        "image_url": "images/Xylophone.png",
+        "sound_url": "assets/sounds/letters/X.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "Y",
+        "word": "Yaourt",
+        "image_url": "images/Yaourt.png",
+        "sound_url": "assets/sounds/letters/Y.mp3",
+        "type": "letter"
+    },
+    {
+        "content": "Z",
+        "word": "Zebre",
+        "image_url": "images/Zebre.png",
+        "sound_url": "assets/sounds/letters/Z.mp3",
+        "type": "letter"
+    }
+]
