@@ -1,0 +1,19 @@
+# IA & METHODOLOGIE (Ton savoir-faire)
+.clinerules/
+AGENTS.md
+RULES.md
+WORKFLOWS.md
+
+# SECRETS (La priorité absolue)
+.env
+**/.env
+
+# PYTHON & ENVIRONNEMENT
+__pycache__/
+.venv/
+venv/
+*.pyc
+
+# DATA & LOGS
+.tmp/
+*.log
