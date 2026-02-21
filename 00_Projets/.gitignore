@@ -17,3 +17,17 @@ venv/
 # DATA & LOGS
 .tmp/
 *.log
+logs/
+
+
+# --- SÉCURITÉ SUPPLÉMENTAIRE ---
+# Exclure le fichier de vision globale si tu ne veux pas partager ton idée
+PROJECT_VITAL.md
+
+# Exclure tous les scripts d'exécution de base de données (couche 3)
+# car ils peuvent contenir des structures de tables sensibles
+execution/db_scripts/
+
+# Exclure les rapports de tests et les fichiers temporaires de l'armée d'IA
+.cline/
+*.logs
