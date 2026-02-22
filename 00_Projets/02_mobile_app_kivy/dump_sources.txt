@@ -1,0 +1,32 @@
+﻿python : Traceback (most 
+recent call last):
+Au caractère Ligne:1 : 1
++ python -c "
++ ~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (Traceback  
+   (most recent call last):   
+ :String) [], RemoteExcept    
+ion
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+  File "<string>", line 7, in 
+<module>
+    print(content)
+    ~~~~~^^^^^^^^^
+  File "C:\Users\Dev_Renaud\Ap
+pData\Local\Programs\Python\Py
+thon313\Lib\encodings\cp1252.p
+y", line 19, in encode
+    return codecs.charmap_enco
+de(input,self.errors,encoding_
+table)[0]
+           ~~~~~~~~~~~~~~~~~~~
+~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^
+UnicodeEncodeError: 'charmap' 
+codec can't encode character 
+'\u2192' in position 195: 
+character maps to <undefined>
+=== main.py ===

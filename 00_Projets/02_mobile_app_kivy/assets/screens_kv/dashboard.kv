@@ -1,0 +1,140 @@
+#: kivy 2.3.0
+# ==============================================================================
+# dashboard.kv — Design du DashboardScreen (Espace Parent — Admin)
+# IDs requis : child_name_input, child_pin_input, status_label
+# ==============================================================================
+
+<DashboardScreen>:
+    ScrollView:
+        BoxLayout:
+            orientation:  "vertical"
+            padding:      ["28dp", "24dp", "28dp", "24dp"]
+            spacing:      "18dp"
+            size_hint_y:  None
+            height:       self.minimum_height
+
+            Widget:
+                size_hint_y: None
+                height: "12dp"
+
+            Label:
+                text:        root.welcome_message
+                font_name:   "OpenDyslexic"
+                font_size:   "32sp"
+                bold:        True
+                color:       0.26, 0.52, 0.96, 1
+                size_hint_y: None
+                height:      "60dp"
+
+            # ── Carte — Ajouter un profil enfant ──────────────────────────────
+            BoxLayout:
+                orientation:  "vertical"
+                size_hint_y:  None
+                height:       self.minimum_height
+                padding:      "20dp"
+                spacing:      "14dp"
+                canvas.before:
+                    Color:
+                        rgba: 0.93, 0.91, 0.85, 1
+                    RoundedRectangle:
+                        pos:    self.pos
+                        size:   self.size
+                        radius: [dp(16), dp(16), dp(16), dp(16)]
+
+                Label:
+                    text:        "Ajouter un profil enfant"
+                    font_name:   "OpenDyslexic"
+                    font_size:   "20sp"
+                    bold:        True
+                    color:       0.15, 0.15, 0.20, 1
+                    size_hint_y: None
+                    height:      "40dp"
+                    halign:      "left"
+                    text_size:   self.size
+
+                Label:
+                    text:        "Prenom de l'enfant"
+                    font_name:   "OpenDyslexic"
+                    font_size:   "16sp"
+                    color:       0.30, 0.30, 0.36, 1
+                    size_hint_y: None
+                    height:      "26dp"
+                    halign:      "left"
+                    text_size:   self.size
+
+                DysTextInput:
+                    id:        child_name_input
+                    hint_text: "Ex : Emma"
+
+                Label:
+                    text:        "Code PIN (4 chiffres)"
+                    font_name:   "OpenDyslexic"
+                    font_size:   "16sp"
+                    color:       0.30, 0.30, 0.36, 1
+                    size_hint_y: None
+                    height:      "26dp"
+                    halign:      "left"
+                    text_size:   self.size
+
+                DysTextInput:
+                    id:             child_pin_input
+                    hint_text:      "Ex : 1234"
+                    input_filter:   "int"
+                    password:       True
+                    on_text:        self.text = self.text[:4]
+
+                Label:
+                    id:          status_label
+                    text:        root.status_message
+                    font_name:   "OpenDyslexic"
+                    font_size:   "15sp"
+                    color:       (0.18, 0.62, 0.40, 1) if root.status_ok else (0.75, 0.40, 0.20, 1)
+                    size_hint_y: None
+                    height:      "32dp"
+                    halign:      "center"
+                    text_size:   self.size
+
+                DysButton:
+                    text:             "Creer le profil" if not root.is_creating else "Envoi en cours..."
+                    background_color: 0.22, 0.71, 0.55, 1
+                    height:           "64dp"
+                    disabled:         root.is_creating
+                    opacity:          0.55 if root.is_creating else 1.0
+                    on_press:         root.create_child_profile()
+
+            Widget:
+                size_hint_y: None
+                height:      "16dp"
+
+            # ── Bouton Verrouiller (Mode Enfant) ──────────────────────────────
+            DysButton:
+                text:             "Verrouiller  (Mode Enfant)"
+                font_size:        "20sp"
+                height:           "64dp"
+                background_color: 0.38, 0.48, 0.82, 1
+                on_release:       root.lock_app()
+
+            # ── Bouton Déconnexion (discret) ──────────────────────────────────
+            DysButton:
+                text:             "Se deconnecter"
+                font_size:        "18sp"
+                height:           "52dp"
+                background_color: 0, 0, 0, 0
+                color:            0.55, 0.40, 0.35, 1
+                on_press:         root.logout()
+                canvas.before:
+                    Color:
+                        rgba: (0.90, 0.84, 0.80, 1) if self.state == 'down' else (0, 0, 0, 0)
+                    RoundedRectangle:
+                        pos:    self.pos
+                        size:   self.size
+                        radius: [dp(12), dp(12), dp(12), dp(12)]
+                    Color:
+                        rgba: 0.75, 0.60, 0.55, 1
+                    Line:
+                        rounded_rectangle: [self.x, self.y, self.width, self.height, dp(12)]
+                        width: 1.2
+
+            Widget:
+                size_hint_y: None
+                height:      "20dp"

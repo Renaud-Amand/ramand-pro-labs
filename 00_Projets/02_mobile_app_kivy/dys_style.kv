@@ -1,26 +1,25 @@
 #: kivy 2.3.0
 # ==============================================================================
-# dys_style.kv — Feuille de style globale DYS-Ready v2
+# dys_style.kv — Widgets globaux DYS-Ready v2
 #
-# Couche     : UI (Layer 1)
-# Contient   : Styles de base + Classes réutilisables DysButton / DysTextInput
-# Convention : Jamais de noir pur (#000) sur fond blanc pur (#FFF).
+# Ce fichier contient UNIQUEMENT les composants réutilisables partagés par
+# tous les écrans. Les designs d'écrans spécifiques se trouvent dans
+# assets/screens_kv/*.kv (chargés après ce fichier par main.py).
+#
+# Contenu :
+#   - <DysScreen>       : fond crème appliqué à tous les écrans hérités
+#   - <Label>           : style DYS par défaut (OpenDyslexic, contraste doux)
+#   - <DysButton>       : bouton DYS réutilisable
+#   - <DysTextInput>    : champ de texte DYS réutilisable
+#   - <DysPinButton>    : bouton de pavé numérique (grand, arrondi)
+#
+# Convention : jamais noir pur (#000) sur blanc pur (#FFF).
 #              Police OpenDyslexic, tailles sp(), dimensions dp().
 # ==============================================================================
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# COULEURS DE RÉFÉRENCE (commentaires uniquement — utilisés dans les règles ci-dessous)
-#   Fond crème      : (0.98, 0.96, 0.90, 1)
-#   Texte principal : (0.15, 0.15, 0.20, 1)   ← gris foncé, jamais noir pur
-#   Primaire bleu   : (0.26, 0.52, 0.96, 1)
-#   Primaire vert   : (0.22, 0.71, 0.55, 1)   ← validation / succès
-# ──────────────────────────────────────────────────────────────────────────────
-
-
 # ══════════════════════════════════════════════════════════════════════════════
 # FOND GLOBAL — DysScreen
-# Tous les écrans héritant de DysScreen reçoivent automatiquement ce fond.
 # ══════════════════════════════════════════════════════════════════════════════
 <DysScreen>:
     canvas.before:
@@ -44,16 +43,15 @@
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# DysButton@Button — Composant réutilisable
-# Usage dans .kv : DysButton: (hérite de Button avec le style DYS)
-# Usage en Python : Factory.DysButton(text="...", on_press=...)
+# DysButton@Button — Bouton DYS réutilisable
+# Usage : DysButton: (hérite de Button avec le style DYS)
 # ══════════════════════════════════════════════════════════════════════════════
 <DysButton@Button>:
     font_name: "OpenDyslexic"
     font_size: "24sp"
     size_hint_y: None
-    height: "56dp"                              # > 48dp minimum (§3 skill)
-    background_color: 0.26, 0.52, 0.96, 1      # bleu doux
+    height: "56dp"
+    background_color: 0.26, 0.52, 0.96, 1
     color: 1, 1, 1, 1
     background_normal: ""
     background_down: ""
@@ -68,25 +66,22 @@
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# DysTextInput@TextInput — Composant réutilisable
-# Usage dans .kv : DysTextInput: (hérite de TextInput avec le style DYS)
-# ⚠️  RÈGLE  : Dans un [] évalué par le Builder KV, utiliser dp(n) (appel de
-#             fonction), JAMAIS "12dp" (chaîne) ni 12dp (littéral invalide).
+# DysTextInput@TextInput — Champ de texte DYS réutilisable
 # ══════════════════════════════════════════════════════════════════════════════
 <DysTextInput@TextInput>:
     font_name: "OpenDyslexic"
     font_size: "24sp"
     foreground_color: 0.15, 0.15, 0.20, 1
-    background_color: 1, 1, 1, 0               # transparent — fond géré par canvas
+    background_color: 1, 1, 1, 0
     cursor_color: 0.26, 0.52, 0.96, 1
+    hint_text_color: 0.60, 0.60, 0.65, 1
     size_hint_y: None
     height: "56dp"
-    padding: [dp(16), dp(14), dp(16), dp(14)]   # [left, top, right, bottom]
     multiline: False
-    hint_text_color: 0.60, 0.60, 0.65, 1
+    padding: [dp(16), (self.height - self.line_height) / 2.0, dp(16), 0]
     canvas.before:
         Color:
-            rgba: 0.93, 0.91, 0.85, 1          # crème légèrement plus foncé que le fond
+            rgba: 0.93, 0.91, 0.85, 1
         RoundedRectangle:
             pos: self.pos
             size: self.size
@@ -99,144 +94,21 @@
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SPLASH SCREEN
+# DysPinButton@Button — Bouton du pavé numérique enfant
+# Massif (80dp min), coins très arrondis, adapté aux doigts d'enfants.
 # ══════════════════════════════════════════════════════════════════════════════
-<SplashScreen>:
-    BoxLayout:
-        orientation: "vertical"
-        padding: "40dp"
-        spacing: "24dp"
-
-        Widget:
-            size_hint_y: 0.2
-
-        # Logo placeholder — remplacer par Image: source=... quand disponible
-        Label:
-            text: "🌟"
-            font_size: "80sp"
-            size_hint_y: None
-            height: "120dp"
-
-        Label:
-            text: "DYS & Moi"
-            font_name: "OpenDyslexic"
-            font_size: "36sp"
-            bold: True
-            color: 0.26, 0.52, 0.96, 1
-            size_hint_y: None
-            height: "60dp"
-
-        Label:
-            text: "Apprendre autrement"
-            font_name: "OpenDyslexic"
-            font_size: "18sp"
-            color: 0.40, 0.40, 0.45, 1
-            size_hint_y: None
-            height: "32dp"
-
-        Widget:
-            size_hint_y: 0.3
-
-        # Barre de progression douce
-        ProgressBar:
-            id: progress_bar
-            max: 100
-            value: 0
-            size_hint_y: None
-            height: "8dp"
-
-        Widget:
-            size_hint_y: 0.1
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# LOGIN SCREEN
-# ══════════════════════════════════════════════════════════════════════════════
-<LoginScreen>:
-    BoxLayout:
-        orientation: "vertical"
-        padding: "40dp"
-        spacing: "20dp"
-
-        Widget:
-            size_hint_y: 0.15
-
-        Label:
-            text: "Bonjour ! 👋"
-            font_name: "OpenDyslexic"
-            font_size: "32sp"
-            color: 0.26, 0.52, 0.96, 1
-            size_hint_y: None
-            height: "60dp"
-
-        Label:
-            text: "Quel est ton prénom ?"
-            font_name: "OpenDyslexic"
-            font_size: "20sp"
-            color: 0.15, 0.15, 0.20, 1
-            size_hint_y: None
-            height: "40dp"
-
-        Widget:
-            size_hint_y: 0.05
-
-        DysTextInput:
-            id: prenom_input
-            hint_text: "Écris ton prénom ici…"
-
-        Widget:
-            size_hint_y: 0.05
-
-        DysButton:
-            text: "C'est parti ! 🚀"
-            on_press: root.validate_login()
-
-        Widget:
-            size_hint_y: 0.3
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# DASHBOARD SCREEN
-# ══════════════════════════════════════════════════════════════════════════════
-<DashboardScreen>:
-    BoxLayout:
-        orientation: "vertical"
-        padding: "40dp"
-        spacing: "20dp"
-
-        Widget:
-            size_hint_y: 0.1
-
-        Label:
-            id: welcome_label
-            text: root.welcome_message
-            font_name: "OpenDyslexic"
-            font_size: "28sp"
-            color: 0.26, 0.52, 0.96, 1
-            size_hint_y: None
-            height: "60dp"
-
-        Label:
-            text: "Que veux-tu faire aujourd'hui ?"
-            font_name: "OpenDyslexic"
-            font_size: "18sp"
-            color: 0.40, 0.40, 0.45, 1
-            size_hint_y: None
-            height: "36dp"
-
-        Widget:
-            size_hint_y: 0.1
-
-        # Placeholder boutons activités — à remplacer par GridLayout en Phase 3
-        DysButton:
-            text: "📖  Lire"
-            background_color: 0.22, 0.71, 0.55, 1    # vert validation
-
-        DysButton:
-            text: "✏️  Écrire"
-
-        DysButton:
-            text: "🎮  Jouer"
-
-        Widget:
-            size_hint_y: 0.2
+<DysPinButton@Button>:
+    font_name:  "OpenDyslexic"
+    font_size:  "30sp"
+    size_hint:  1, 1
+    color:      0.15, 0.15, 0.20, 1
+    background_color: 0, 0, 0, 0
+    background_normal: ""
+    background_down:   ""
+    canvas.before:
+        Color:
+            rgba: (0.88, 0.86, 0.80, 1) if self.state == 'down' else (0.93, 0.91, 0.85, 1)
+        RoundedRectangle:
+            pos:    self.pos
+            size:   self.size
+            radius: [dp(16), dp(16), dp(16), dp(16)]

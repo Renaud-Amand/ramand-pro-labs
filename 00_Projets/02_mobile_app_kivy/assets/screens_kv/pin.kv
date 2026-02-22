@@ -1,0 +1,155 @@
+#: kivy 2.3.0
+# ==============================================================================
+# pin.kv — Design du PinScreen (écran de verrouillage enfant)
+# Nécessite DysPinButton (défini dans dys_style.kv — chargé avant ce fichier)
+# ==============================================================================
+
+<PinScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding:     ["24dp", "24dp", "24dp", "16dp"]
+        spacing:     "16dp"
+
+        Widget:
+            size_hint_y: 0.05
+
+        Label:
+            text:       "Qui est la ?"
+            font_name:  "OpenDyslexic"
+            font_size:  "34sp"
+            bold:       True
+            color:      0.26, 0.52, 0.96, 1
+            size_hint_y: None
+            height:     "64dp"
+
+        Label:
+            text:       "Tape ton code secret"
+            font_name:  "OpenDyslexic"
+            font_size:  "18sp"
+            color:      0.40, 0.40, 0.48, 1
+            size_hint_y: None
+            height:     "36dp"
+
+        # Label d'erreur PIN (vide par défaut, orange si mauvais code)
+        Label:
+            text:        root.pin_error
+            font_name:   "OpenDyslexic"
+            font_size:   "15sp"
+            color:       0.75, 0.35, 0.20, 1
+            size_hint_y: None
+            height:      "28dp"
+            halign:      "center"
+            text_size:   self.size
+
+        # ── Indicateurs (4 cercles) ────────────────────────────────────────────
+        BoxLayout:
+            orientation:  "horizontal"
+            size_hint_y:  None
+            height:       "56dp"
+            spacing:      "20dp"
+            padding:      ["80dp", "4dp", "80dp", "4dp"]
+
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: (0.26, 0.52, 0.96, 1) if len(root.pin_code) >= 1 else (0.80, 0.78, 0.72, 1)
+                    Ellipse:
+                        pos:  self.x + self.width/2 - dp(16), self.y + self.height/2 - dp(16)
+                        size: dp(32), dp(32)
+                text: ""
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: (0.26, 0.52, 0.96, 1) if len(root.pin_code) >= 2 else (0.80, 0.78, 0.72, 1)
+                    Ellipse:
+                        pos:  self.x + self.width/2 - dp(16), self.y + self.height/2 - dp(16)
+                        size: dp(32), dp(32)
+                text: ""
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: (0.26, 0.52, 0.96, 1) if len(root.pin_code) >= 3 else (0.80, 0.78, 0.72, 1)
+                    Ellipse:
+                        pos:  self.x + self.width/2 - dp(16), self.y + self.height/2 - dp(16)
+                        size: dp(32), dp(32)
+                text: ""
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: (0.26, 0.52, 0.96, 1) if len(root.pin_code) >= 4 else (0.80, 0.78, 0.72, 1)
+                    Ellipse:
+                        pos:  self.x + self.width/2 - dp(16), self.y + self.height/2 - dp(16)
+                        size: dp(32), dp(32)
+                text: ""
+
+        Widget:
+            size_hint_y: 0.04
+
+        # ── Pavé numérique (GridLayout 3 colonnes) ────────────────────────────
+        GridLayout:
+            cols:        3
+            spacing:     "10dp"
+            size_hint_y: 1
+            opacity:     0.45 if root.is_checking else 1.0
+
+            DysPinButton:
+                text: "1"
+                on_press: root.on_digit("1")
+            DysPinButton:
+                text: "2"
+                on_press: root.on_digit("2")
+            DysPinButton:
+                text: "3"
+                on_press: root.on_digit("3")
+
+            DysPinButton:
+                text: "4"
+                on_press: root.on_digit("4")
+            DysPinButton:
+                text: "5"
+                on_press: root.on_digit("5")
+            DysPinButton:
+                text: "6"
+                on_press: root.on_digit("6")
+
+            DysPinButton:
+                text: "7"
+                on_press: root.on_digit("7")
+            DysPinButton:
+                text: "8"
+                on_press: root.on_digit("8")
+            DysPinButton:
+                text: "9"
+                on_press: root.on_digit("9")
+
+            DysPinButton:
+                text: "< eff"
+                font_size: "18sp"
+                on_press: root.on_erase()
+                canvas.before:
+                    Color:
+                        rgba: (0.92, 0.75, 0.65, 1) if self.state == 'down' else (0.97, 0.87, 0.80, 1)
+                    RoundedRectangle:
+                        pos:    self.pos
+                        size:   self.size
+                        radius: [dp(16), dp(16), dp(16), dp(16)]
+            DysPinButton:
+                text: "0"
+                on_press: root.on_digit("0")
+            Widget:
+
+        Widget:
+            size_hint_y: 0.03
+
+        # ── Porte de secours — Espace Parent (discret, tout en bas) ──────────
+        Button:
+            text:              "Espace Parent"
+            font_name:         "OpenDyslexic"
+            font_size:         "14sp"
+            color:             0.60, 0.55, 0.52, 1
+            size_hint_y:       None
+            height:            "36dp"
+            background_color:  0, 0, 0, 0
+            background_normal: ""
+            background_down:   ""
+            on_release:        root.go_to_parent_login()

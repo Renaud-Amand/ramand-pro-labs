@@ -1,0 +1,88 @@
+#: kivy 2.3.0
+# ==============================================================================
+# login.kv — Design du LoginScreen (Espace Parent)
+# IDs requis par Python : email_input, password_input, error_label
+# ==============================================================================
+
+<LoginScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: ["40dp", "32dp", "40dp", "32dp"]
+        spacing: "18dp"
+
+        Widget:
+            size_hint_y: 0.10
+
+        Label:
+            text: "Espace Parent"
+            font_name: "OpenDyslexic"
+            font_size: "34sp"
+            bold: True
+            color: 0.26, 0.52, 0.96, 1
+            size_hint_y: None
+            height: "64dp"
+
+        Label:
+            text: "Connectez-vous pour suivre la progression."
+            font_name: "OpenDyslexic"
+            font_size: "18sp"
+            color: 0.40, 0.40, 0.48, 1
+            size_hint_y: None
+            height: "40dp"
+
+        Widget:
+            size_hint_y: 0.04
+
+        Label:
+            text: "Adresse email"
+            font_name: "OpenDyslexic"
+            font_size: "16sp"
+            color: 0.30, 0.30, 0.36, 1
+            size_hint_y: None
+            height: "28dp"
+            halign: "left"
+            text_size: self.size
+
+        DysTextInput:
+            id: email_input
+            hint_text: "parent@exemple.fr"
+            input_type: "mail"
+            keyboard_suggestions: True
+
+        Label:
+            text: "Mot de passe"
+            font_name: "OpenDyslexic"
+            font_size: "16sp"
+            color: 0.30, 0.30, 0.36, 1
+            size_hint_y: None
+            height: "28dp"
+            halign: "left"
+            text_size: self.size
+
+        DysTextInput:
+            id: password_input
+            hint_text: "Votre mot de passe"
+            password: True
+
+        Label:
+            id: error_label
+            text: ""
+            font_name: "OpenDyslexic"
+            font_size: "16sp"
+            color: 0.75, 0.40, 0.20, 1
+            size_hint_y: None
+            height: "36dp"
+            halign: "center"
+            text_size: self.size
+
+        DysButton:
+            text: "Se connecter"
+            font_size: "26sp"
+            height: "68dp"
+            background_color: 0.26, 0.52, 0.96, 1
+            on_press: root.submit_login()
+            disabled: root.is_loading
+            opacity: 0.70 if root.is_loading else 1.0
+
+        Widget:
+            size_hint_y: 0.12

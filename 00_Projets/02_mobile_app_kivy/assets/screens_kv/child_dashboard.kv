@@ -1,0 +1,47 @@
+#: kivy 2.3.0
+# ==============================================================================
+# child_dashboard.kv — Design du ChildDashboardScreen (squelette Phase 3)
+# ==============================================================================
+
+<ChildDashboardScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding:     "40dp"
+        spacing:     "24dp"
+
+        Widget:
+            size_hint_y: 0.1
+
+        Label:
+            text:      "Bonjour !"
+            font_name: "OpenDyslexic"
+            font_size: "34sp"
+            bold:      True
+            color:     0.22, 0.71, 0.55, 1
+
+        Label:
+            text:       "Ton espace est bientot pret."
+            font_name:  "OpenDyslexic"
+            font_size:  "20sp"
+            color:      0.40, 0.40, 0.48, 1
+            size_hint_y: None
+            height:     "48dp"
+
+        Widget:
+            size_hint_y: 0.15
+
+        DysButton:
+            text:             "Lire  (bientot)"
+            background_color: 0.22, 0.71, 0.55, 1
+            opacity:          0.6
+
+        DysButton:
+            text:    "Ecrire  (bientot)"
+            opacity: 0.6
+
+        DysButton:
+            text:    "Jouer  (bientot)"
+            opacity: 0.6
+
+        Widget:
+            size_hint_y: 0.2

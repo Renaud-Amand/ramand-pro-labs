@@ -1,0 +1,51 @@
+#: kivy 2.3.0
+# ==============================================================================
+# splash.kv — Design du SplashScreen
+# ==============================================================================
+
+<SplashScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: "40dp"
+        spacing: "24dp"
+
+        Widget:
+            size_hint_y: 0.2
+
+        # Logo placeholder — remplacer par Image: source=... quand disponible
+        Label:
+            text: "🌟"
+            font_size: "80sp"
+            size_hint_y: None
+            height: "120dp"
+
+        Label:
+            text: "DYS & Moi"
+            font_name: "OpenDyslexic"
+            font_size: "36sp"
+            bold: True
+            color: 0.26, 0.52, 0.96, 1
+            size_hint_y: None
+            height: "60dp"
+
+        Label:
+            text: "Apprendre autrement"
+            font_name: "OpenDyslexic"
+            font_size: "18sp"
+            color: 0.40, 0.40, 0.45, 1
+            size_hint_y: None
+            height: "32dp"
+
+        Widget:
+            size_hint_y: 0.3
+
+        # Barre de progression douce
+        ProgressBar:
+            id: progress_bar
+            max: 100
+            value: 0
+            size_hint_y: None
+            height: "8dp"
+
+        Widget:
+            size_hint_y: 0.1
