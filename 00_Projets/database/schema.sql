@@ -1,89 +1,19 @@
--- =============================================================================
--- FILE: database/schema.sql
--- PURPOSE: Create the `profiles` table linked to Supabase Auth users.
--- HOW TO RUN: Paste this file in the Supabase Dashboard > SQL Editor > Run.
--- =============================================================================
+-- SPRINT 0 : Migration Child Profiles (Logic & Security)
 
+-- 1. Ajout des colonnes de données et de sécurité
+ALTER TABLE public.child_profiles 
+ADD COLUMN IF NOT EXISTS age INTEGER DEFAULT 6,
+ADD COLUMN IF NOT EXISTS avatar_config JSONB DEFAULT '{}'::jsonb,
+ADD COLUMN IF NOT EXISTS dys_settings JSONB DEFAULT '{"font": "OpenDyslexic", "contrast": "default"}'::jsonb,
+ADD COLUMN IF NOT EXISTS pin_salt TEXT; -- Indispensable pour le hachage sécurisé
 
--- -----------------------------------------------------------------------------
--- TABLE: profiles
--- One row per authenticated user (mirrors auth.users via foreign key).
--- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS public.profiles (
-    -- Primary key: same UUID as auth.users to allow easy joins
-    id          UUID        PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-
-    -- Automatically set on insert; never updated
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-
-    -- Display name chosen by the user
-    username    TEXT,
-
-    -- URL to the user's avatar (Supabase Storage or external)
-    avatar_url  TEXT
-);
-
-
--- -----------------------------------------------------------------------------
--- COMMENTS (optional but good practice for future maintainers)
--- -----------------------------------------------------------------------------
-COMMENT ON TABLE  public.profiles              IS 'Public profile data for each authenticated user.';
-COMMENT ON COLUMN public.profiles.id           IS 'FK to auth.users.id — set at registration.';
-COMMENT ON COLUMN public.profiles.created_at   IS 'Timestamp of profile creation (UTC).';
-COMMENT ON COLUMN public.profiles.username     IS 'Display name chosen by the user.';
-COMMENT ON COLUMN public.profiles.avatar_url   IS 'URL to the user avatar image.';
-
-
--- -----------------------------------------------------------------------------
--- ROW LEVEL SECURITY (RLS)
--- Always enable RLS on public tables in Supabase.
--- -----------------------------------------------------------------------------
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-
--- Policy 1: Users can read their own profile
-CREATE POLICY "users_select_own_profile"
-    ON public.profiles
-    FOR SELECT
-    USING (auth.uid() = id);
-
--- Policy 2: Users can insert their own profile (on first login)
-CREATE POLICY "users_insert_own_profile"
-    ON public.profiles
-    FOR INSERT
-    WITH CHECK (auth.uid() = id);
-
--- Policy 3: Users can update their own profile
-CREATE POLICY "users_update_own_profile"
-    ON public.profiles
-    FOR UPDATE
-    USING (auth.uid() = id)
-    WITH CHECK (auth.uid() = id);
-
-
--- -----------------------------------------------------------------------------
--- TRIGGER: auto-create a profile row when a new user signs up in auth.users
--- This avoids manual profile creation after each registration.
--- -----------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
+-- 2. Renommage sécurisé de la colonne PIN
+-- On vérifie si pin_code existe pour le transformer en pin_hash
+DO $$ 
 BEGIN
-    INSERT INTO public.profiles (id, created_at, username, avatar_url)
-    VALUES (
-        NEW.id,
-        NOW(),
-        NEW.raw_user_meta_data ->> 'username',   -- pulled from signup metadata
-        NEW.raw_user_meta_data ->> 'avatar_url'  -- pulled from signup metadata
-    );
-    RETURN NEW;
-END;
-$$;
-
--- Attach the trigger to auth.users
-CREATE OR REPLACE TRIGGER on_auth_user_created
-    AFTER INSERT ON auth.users
-    FOR EACH ROW
-    EXECUTE FUNCTION public.handle_new_user();
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='child_profiles' AND column_name='pin_code') THEN
+    ALTER TABLE public.child_profiles RENAME COLUMN pin_code TO pin_hash;
+  ELSE
+    ALTER TABLE public.child_profiles ADD COLUMN IF NOT EXISTS pin_hash TEXT;
+  END IF;
+END $$;

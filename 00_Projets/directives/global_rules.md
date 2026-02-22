@@ -11,3 +11,4 @@
 - **Git:** Never add `.env` or `PROJECT_VITAL.md` to staging.
 - **Verification:** Always run a syntax check before proposing a final script.
 - **Communication:** Be concise, socratic, and architectural.
+- **Security:** NEVER STORE PIN CODES IN PLAIN TEXT. Always use SHA-256 hashing with a unique salt for every entry before database insertion.

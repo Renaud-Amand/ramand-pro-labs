@@ -32,6 +32,8 @@ If a potential vulnerability, DB error, or access issue occurs: **HALT PRODUCTIO
 
 ## 🧠 LEARNING LOG (REtex)
 
+NEVER STORE PIN CODES IN PLAIN TEXT. Always use SHA-256 hashing with a unique salt for every entry before database insertion.
+
 ### ❌ Past Failures & Solutions:
 
 - (To be populated by Agent)

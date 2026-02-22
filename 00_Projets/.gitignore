@@ -31,3 +31,22 @@ execution/db_scripts/
 # Exclure les rapports de tests et les fichiers temporaires de l'armée d'IA
 .cline/
 *.logs
+
+# --- PROTECTION DE LA SESSION ---
+# Ne JAMAIS envoyer les jetons de connexion réels
+session.json
+
+# --- PROTECTION DE LA MÉTHODOLOGIE IA ---
+# On garde les agents et les règles pour nous (ton avantage déloyal)
+.clinerules
+AGENTS.md
+RULES.md
+WORKFLOWS.md
+.cline/
+
+# --- FICHIERS TEMPORAIRES DE DUMP ---
+# On évite de polluer le repo avec les fichiers d'analyse
+*_dump.txt
+kv_dump.txt
+output_test.txt
+TECH_DEBT.md
