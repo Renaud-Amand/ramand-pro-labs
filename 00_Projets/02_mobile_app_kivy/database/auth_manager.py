@@ -1,8 +1,15 @@
 import asyncio
 import os
+import sys
 from supabase import create_client, Client
 from kivy.storage.jsonstore import JsonStore
 from dotenv import load_dotenv
+
+# Security: PIN hashing/verification is delegated to ProfileManager (Sprint 0)
+from database.profile_manager import ProfileManager
+
+# Enforce UTF-8 output to prevent UnicodeEncodeError on Windows
+sys.stdout.reconfigure(encoding='utf-8')
 
 # Charge le fichier .env qui se trouve à la racine de ton projet
 load_dotenv()
@@ -50,42 +57,45 @@ async def logout_user() -> tuple[bool, str]:
 
 async def create_child_profile_db(
     prenom: str,
-    pin_code: str,
+    pin_raw: str,
     access_token: str,
 ) -> tuple[bool, str]:
     """
-    Insère un profil enfant dans la table child_profiles de Supabase.
+    Inserts a child profile into Supabase with a securely hashed PIN.
 
-    Étapes :
-        1. Récupère l'UUID du parent connecté via get_user(access_token).
-        2. Insère une ligne {user_id, prenom, pin_code} dans child_profiles.
+    Steps:
+        1. Retrieve parent UUID from access_token via get_user().
+        2. Hash the raw PIN using ProfileManager.hash_pin() (SHA-256 + unique salt).
+        3. Insert {user_id, prenom, pin_hash, pin_salt} — NEVER the raw PIN.
 
     Returns:
-        (True,  message_succès)  si l'insertion réussit.
-        (False, message_erreur)  en cas d'erreur.
+        (True,  success_message)  on successful insert.
+        (False, error_message)    on any failure.
     """
     try:
-        # Récupération de l'UUID du parent à partir du token de session
+        # Step 1: Retrieve authenticated parent UUID
         user_response = supabase.auth.get_user(access_token)
         if not user_response or not user_response.user:
             return False, "Impossible de recuperer l'utilisateur connecte."
 
         user_id = user_response.user.id
 
-        # Insertion dans la table child_profiles
+        # Step 2: Hash the PIN — plaintext is NEVER stored (COPPA/RGPD compliance)
+        pin_hash, pin_salt = ProfileManager.hash_pin(pin_raw.strip())
+
+        # Step 3: Insert hashed credentials only
         result = (
             supabase
             .table("child_profiles")
             .insert({
                 "user_id":  user_id,
                 "prenom":   prenom.strip().capitalize(),
-                "pin_code": pin_code.strip(),
+                "pin_hash": pin_hash,
+                "pin_salt": pin_salt,
             })
             .execute()
         )
 
-        # supabase-py v2 lève une exception si l'insertion échoue,
-        # mais on vérifie aussi que data est non vide par sécurité.
         if result.data:
             return True, f"Profil de {prenom.capitalize()} cree avec succes !"
         else:
@@ -95,22 +105,24 @@ async def create_child_profile_db(
         return False, f"Erreur Supabase : {str(e)}"
 
 
-async def verify_child_pin_db(pin_code: str) -> tuple[bool, str, dict]:
+async def verify_child_pin_db(pin_raw: str) -> tuple[bool, str, dict]:
     """
-    Vérifie un code PIN enfant en interrogeant la table child_profiles.
+    Verifies a child PIN using secure constant-time comparison.
 
-    Étapes :
-        1. Lit le token d'accès depuis le JsonStore local (session.json).
-        2. Configure la session Supabase avec ce token.
-        3. Recherche le PIN dans child_profiles.
+    Steps:
+        1. Read access token from local JsonStore (session.json).
+        2. Set Supabase session with this token (respects RLS).
+        3. Fetch ALL child profiles for this parent (pin_hash + pin_salt).
+        4. Delegate comparison to ProfileManager.verify_pin() — constant-time
+           via hmac.compare_digest to prevent timing attacks.
 
     Returns:
-        (True,  "Accès autorisé",    {"id": ..., "prenom": ...})  si PIN correct.
-        (False, "Code PIN incorrect", {})                          si PIN inconnu.
-        (False, "Session expirée…",  {})                          si pas de token local.
+        (True,  "Bonjour {prenom} !", child_dict)  if PIN matches.
+        (False, "Code PIN incorrect", {})           if no match.
+        (False, "Session expiree…",  {})            if no local token.
     """
     try:
-        # Lecture du token stocké localement
+        # Step 1: Read local session token
         if not store.exists("session"):
             return False, "Session expiree. Reconnectez-vous.", {}
 
@@ -118,24 +130,28 @@ async def verify_child_pin_db(pin_code: str) -> tuple[bool, str, dict]:
         if not token:
             return False, "Token invalide. Reconnectez-vous.", {}
 
-        # Configuration de la session Supabase avec le token parent
-        # (évite les erreurs RLS si Row Level Security est activée)
+        # Step 2: Set Supabase session (required for RLS enforcement)
         supabase.auth.set_session(token, "")
 
-        # Recherche du PIN dans child_profiles
+        # Step 3: Fetch hash + salt for all children — do NOT query by plaintext PIN
         result = (
             supabase
             .table("child_profiles")
-            .select("id, prenom, pin_code")
-            .eq("pin_code", pin_code.strip())
+            .select("id, prenom, pin_hash, pin_salt")
             .execute()
         )
 
+        # Step 4: Constant-time comparison via ProfileManager (prevents timing attacks)
         if result.data:
-            child = result.data[0]
-            return True, f"Bonjour {child.get('prenom', '')} !", child
-        else:
-            return False, "Code PIN incorrect.", {}
+            for child in result.data:
+                stored_hash = child.get("pin_hash", "")
+                stored_salt = child.get("pin_salt", "")
+                if stored_hash and stored_salt and ProfileManager.verify_pin(
+                    pin_raw.strip(), stored_hash, stored_salt
+                ):
+                    return True, f"Bonjour {child.get('prenom', '')} !", child
+
+        return False, "Code PIN incorrect.", {}
 
     except Exception as e:
         return False, f"Erreur verification PIN : {str(e)}", {}

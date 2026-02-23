@@ -1,137 +1,86 @@
-# 📋 SESSION STATUS — DYS & Moi (Mobile App Kivy)
+# 🧭 SESSION STATUS & PROGRESS TRACKER: Dys-Pédagogie (Mobile App Kivy)
 
-> **Date de la session :** 2026-02-22  
-> **Statut général :** ✅ Fondations stables — prêt pour la Phase 2 (Supabase + Exercices)
+> **Last Update:** 2026-02-23 23:23
+> **Global State:** ✅ Phase 2 Complete — Circular-import crash and session-token blocker both resolved. App launches and authenticates end-to-end. Phase 3 (Core Pedagogy) is next.
 
----
+## [DONE] - COMPLETED TASKS
 
-## ✅ CE QUI A ÉTÉ FAIT
+### 1. Environment & Config
 
-### 1. Environnement
+- Python `.venv` active at project root.
+- Kivy installed and verified.
+- Supabase connection validated via `execution/test_supabase_conn.py`.
+- `.gitignore` configured (`.venv`, `.env`, `__pycache__` excluded).
 
-- Venv Python créé et activé : `.venv/` à la racine de `00_Projets`
-- Kivy installé et fonctionnel
-- Connexion Supabase testée via `execution/test_supabase_conn.py` (credentials en `.env`)
-- `.gitignore` mis en place (exclut `.venv`, `.env`, `__pycache__`)
+### 2. UI Architecture & Accessibility (DYS-Ready)
 
-### 2. Structure du projet
+- `DysScreen`: Base class implemented for global accessibility inheritance.
+- `DysButton` & `DysTextInput`: Reusable KV components (min 56dp height, high contrast).
+- OpenDyslexic font registered with `os.path.exists()` fallback.
+- **Rule Enforced:** Absolute paths only via `BASE_DIR = os.path.dirname(os.path.abspath(__file__))`.
 
-```
-02_mobile_app_kivy/
-├── main.py              ← Point d'entrée, logique, navigation, stubs Supabase
-├── dys_style.kv         ← Feuille de style globale DYS (UI Layer)
-├── requirements.txt     ← Dépendances Kivy
-└── assets/
-    └── fonts/
-        ├── OpenDyslexic-Regular.otf     ✅ présent
-        ├── OpenDyslexic-Bold.otf        ✅ présent
-        ├── OpenDyslexic-Italic.otf      ✅ présent
-        └── OpenDyslexic-BoldItalic.otf  ✅ présent
-```
+### 3. Navigation Flow (Functional)
 
-### 3. Navigation (100% fonctionnelle)
+- `SplashScreen` (3s auto-transition) ──▶ `LoginScreen` (prenom check) ──▶ `DashboardScreen` (dynamic greeting + stats).
 
-```
-SplashScreen (3s) ──auto──▶ LoginScreen ──[C'est parti!]──▶ DashboardScreen
-```
+### 4. Phase 2 — Supabase Integration (Complete)
 
-- **SplashScreen** : logo 🌟, progress bar animée, transition auto après 3 secondes
-- **LoginScreen** : saisie du prénom + validation basique (mode offline)
-- **DashboardScreen** : message de bienvenue dynamique `"Bonjour [Prénom] ! 🌟"`
+- `database/supabase_client.py`: `SupabaseManager` singleton. Offline-First, Zero-Trust (ANON_KEY only), graceful `.env`-missing fallback.
+- `main.py`: `check_login(prenom)` queries `users` table; `load_user_data(prenom, app)` fetches `progress` table. Both Offline-First.
+- `screens/login_screen.py`: `submit_login()` calls `check_login()` in daemon thread; result dispatched via `Clock.schedule_once`; success stores `user_prenom` on `DysApp` and navigates to `dashboard`.
+- `screens/dashboard_screen.py`: `on_enter()` calls `load_user_data()` in daemon thread; callback updates `welcome_message`, `score_label`, `sessions_label` StringProperties. Logout clears app state.
 
-### 4. Architecture DYS-Ready
+### 5. Bug Fixes (2026-02-23)
 
-- **`DysScreen`** : classe de base pour tous les écrans (accessibilité centralisée)
-- **`DysButton`** : composant réutilisable KV (hauteur min 56dp, coin arrondi, bleu doux)
-- **`DysTextInput`** : composant réutilisable KV (fond crème, bordure focus bleue)
-- Police `OpenDyslexic` enregistrée avec guard `os.path.exists()` (pas de crash si absente)
-- Tous les chemins sont **absolus** (construits depuis `BASE_DIR`)
-
-### 5. Stubs Supabase prêts
-
-- `check_login(prenom)` → stub documenté dans `main.py` (lignes ~226–268)
-- `load_user_data(prenom, app)` → stub documenté dans `main.py` (lignes ~271–306)
-- Commentaires `# SUPABASE HOOK` marquent précisément les points de branchement
-- **Règle** : ne jamais toucher au design (`dys_style.kv`) lors du branchement
+- **Circular Import (`ImportError`):** Moved `from main import check_login` and `from main import load_user_data` from module-level to local scope inside their respective daemon-thread workers. App no longer crashes on startup.
+- **Session Token Blocker ("Session expirée"):** `login_screen.py` now calls `auth_manager.login_user(email, password)` (Supabase Auth) instead of the prenom-only `check_login`. Real JWT written to `session.json` and `app.session_data`, unblocking `create_child_profile` and `verify_child_pin_db`.
 
 ---
 
-## 🔲 CE QU'IL RESTE À FAIRE
+## [CURRENT] - ACTIVE PHASE (PHASE 3: CORE PEDAGOGY)
 
-### Phase 2 — Connexion Supabase (priorité haute)
+**Priority:** High. Build the first learning module and connect it to Supabase progress tracking.
 
-- [ ] Créer `database/supabase_client.py` : initialiser le client Supabase depuis `.env`
-- [ ] Implémenter `check_login()` : requête `SELECT * FROM users WHERE prenom = ?`
-- [ ] Implémenter `load_user_data()` : requête sur table `progress`
-- [ ] Gérer le mode offline (fallback JSON local si Supabase indisponible)
-- [ ] Créer les tables Supabase : `users (id, prenom, created_at, niveau)` + `progress (user_id, activite, score, updated_at)`
-  - Schema de référence : `database/schema.sql`
-
-### Phase 3 — Premiers Exercices Pédagogiques
-
-- [ ] Concevoir l'écran `ExerciceScreen` (hérite de `DysScreen`)
-- [ ] Intégrer un premier exercice : lecture de syllabes ou lettres
-- [ ] Sauvegarder la progression après chaque exercice (via `load_user_data`)
-- [ ] Remplacer les boutons placeholder du Dashboard (Lire / Écrire / Jouer) par une vraie navigation
-
-### Phase 4 — Polissage UI
-
-- [ ] Ajouter un vrai logo à la place de l'emoji 🌟 (fichier image dans `assets/images/`)
-- [ ] Créer un écran de profil (modifier le prénom, voir la progression)
-- [ ] Tester sur Android (Buildozer)
+- [x] **Task 1:** Patch `dashboard.kv` — add `score_label` / `sessions_label` display widgets (companion to Phase 2 Python changes).
+- [x] **Task 2 (Bug):** Fix circular `ImportError` — deferred `from main import` calls to local scope in daemon-thread workers.
+- [x] **Task 3 (Bug):** Fix "Session expirée" blocker — `login_screen.py` now performs full Supabase Auth (email + password → JWT) and populates `app.session_data`.
+- [ ] **Task 4:** Execute `database/schema.sql` on Supabase to create `users` and `progress` tables (if not already done).
+- [ ] **Task 5:** Create `screens/exercice_screen.py` — `ExerciceScreen(DysScreen)` template with difficulty routing.
+- [ ] **Task 6:** Implement first module: Syllable / Letter reading logic.
+- [ ] **Task 7:** On exercise completion, call `load_user_data()` to refresh progress stats on `DashboardScreen`.
 
 ---
 
-## 🚀 COMMANDES POUR REPRENDRE LA PROCHAINE FOIS
+## [NEXT] - UPCOMING PHASES
 
-### 1. Activer l'environnement virtuel
+### Phase 4: UI Polish & Accessibility
+
+- [ ] Replace placeholder emoji (🌟) with actual image asset in `assets/images/`.
+- [ ] Create child Profile management screen.
+- [ ] Full DYS accessibility audit (contrast ratios, tap-target sizes, font scaling).
+
+### Phase 5: Build & Distribution
+
+- [ ] Configure `buildozer.spec` for Android target.
+- [ ] Build and sign APK via Buildozer.
+- [ ] Smoke-test on physical Android device.
+
+---
+
+## 🛑 STRICT DIRECTIVES FOR AI AGENTS (READ BEFORE CODING)
+
+1. **Separation of Concerns:** DO NOT modify `02_mobile_app_kivy/dys_style.kv` to implement backend logic. All Supabase logic belongs in Python files.
+2. **Hook Points:** Look for `# SUPABASE HOOK` comments in `main.py`. These are the designated injection points.
+3. **Pathing:** NEVER use relative paths. Always construct from `BASE_DIR`.
+4. **Inheritance:** Any new screen MUST inherit from `DysScreen`.
+5. **Zero-Trust Rule:** Never hardcode secrets. Always use `os.getenv()` for Supabase credentials.
+
+---
+
+## 🚀 QUICK LAUNCH COMMANDS (Windows PowerShell)
+
+**Activate Env:**
 
 ```powershell
 & c:/Users/Dev_Renaud/Documents/00_Dev/00_Projets/.venv/Scripts/Activate.ps1
 ```
-
-### 2. Lancer l'application
-
-```powershell
-cd c:\Users\Dev_Renaud\Documents\00_Dev\00_Projets\02_mobile_app_kivy
-python main.py
-```
-
-### 3. Tester la connexion Supabase
-
-```powershell
-cd c:\Users\Dev_Renaud\Documents\00_Dev\00_Projets
-python execution/test_supabase_conn.py
-```
-
-### 4. Installer les dépendances (si nouvel environnement)
-
-```powershell
-pip install -r 02_mobile_app_kivy/requirements.txt
-```
-
----
-
-## 📁 FICHIERS CLÉS
-
-| Fichier                                     | Rôle                                                       |
-| ------------------------------------------- | ---------------------------------------------------------- |
-| `02_mobile_app_kivy/main.py`                | Point d'entrée + stubs Supabase                            |
-| `02_mobile_app_kivy/dys_style.kv`           | Style global (ne pas toucher lors du branchement Supabase) |
-| `directives/skills/skill-kivy-interface.md` | Conventions Kivy & LEARNING LOG                            |
-| `directives/global_rules.md`                | Règles globales du projet                                  |
-| `database/schema.sql`                       | Schéma des tables Supabase                                 |
-| `.env`                                      | Credentials Supabase (ne jamais commiter)                  |
-| `execution/test_supabase_conn.py`           | Script de test de connexion Supabase                       |
-
----
-
-## 🤖 CONTEXTE POUR LES IAs LOCALES (Llama / Codestral)
-
-> Si tu es une IA locale qui reprend ce projet, voici ce que tu dois savoir :
->
-> 1. **Ne jamais modifier `dys_style.kv`** pour brancher Supabase — seul `main.py` doit changer.
-> 2. **Les stubs sont marqués** `# SUPABASE HOOK` dans `main.py` — c'est l'unique point d'entrée.
-> 3. **Chemins toujours absolus** : construire depuis `BASE_DIR = os.path.dirname(os.path.abspath(__file__))`.
-> 4. **Classe de base `DysScreen`** : tout nouvel écran doit en hériter.
-> 5. **Le client Supabase** sera dans `database/supabase_client.py` (à créer en Phase 2).

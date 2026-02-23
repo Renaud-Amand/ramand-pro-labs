@@ -1,0 +1,40 @@
+{
+  "_comment": "avatar_config — Colonne JSONB (table: child_profiles)",
+  "_version": "1.0",
+
+  "skin": {
+    "tone_hex": "#FADFB3",
+    "_label": "Crème pêche"
+  },
+
+  "eyes": {
+    "color_hex": "#6B8EAD",
+    "_label": "Bleu ardoise",
+    "shape": "round"
+  },
+
+  "hair": {
+    "color_hex": "#E6B961",
+    "_label": "Blond blé",
+    "style": "short"
+  },
+
+  "clothes": {
+    "top_hex": "#A0B0D1",
+    "_label_top": "Lavande délavée",
+    "bottom_hex": "#A3C9A8",
+    "_label_bottom": "Vert menthe"
+  },
+
+  "_available_shapes": {
+    "eyes":  ["round", "almond", "wide"],
+    "hair":  ["short", "long", "curly", "bun"]
+  },
+
+  "_palette_reference": {
+    "skin":    ["#FADFB3", "#E5C29F", "#A67C52", "#7A543A"],
+    "eyes":    ["#6B8EAD", "#7A9E7E", "#B88645", "#4A4A4A"],
+    "hair":    ["#E6B961", "#995C3C", "#423129", "#2C3539", "#83A3B6", "#D8A4B6"],
+    "clothes": ["#A0B0D1", "#A3C9A8", "#E7C665", "#D68A7C"]
+  }
+}

@@ -1,0 +1,169 @@
+#:kivy 2.3.0
+# assets/screens_kv/avatar.kv
+#
+# Écran : Constructeur d'avatar (AvatarScreen)
+# Règles DYS appliquées :
+#   - Fond ivoire (#FDFBEE)  — pas de blanc pur
+#   - Boutons ≥ 56dp         — MIN_BUTTON_HEIGHT
+#   - Aucun motif/texture    — aplats de couleur uniquement
+#   - Espacement généreux    — 24dp entre sections
+# ─────────────────────────────────────────────────────
+
+<AvatarColorButton@Button>:
+    # ── Bouton de sélection de couleur dans la grille ──
+    size_hint:      None, None
+    size:           dp(52), dp(52)
+    background_color: 0, 0, 0, 0         # On gère la couleur via canvas
+    border:         0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: self.background_normal  # surcharge en Python au moment du bind
+        Ellipse:
+            size: self.size
+            pos:  self.pos
+        Color:
+            rgba: (0.80, 0.76, 0.72, 1) if self.state == 'normal' else (0.26, 0.52, 0.96, 1)
+        Line:
+            ellipse: self.x, self.y, self.width, self.height
+            width:   2
+
+
+<CategoryButton@Button>:
+    # ── Bouton de catégorie (Peau / Cheveux / Yeux / Habits) ──
+    size_hint:       1, None
+    height:          dp(56)              # MIN_BUTTON_HEIGHT
+    font_name:       "OpenDyslexic"
+    font_size:       sp(17)
+    color:           0.15, 0.15, 0.20, 1
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: (0.898, 0.761, 0.624, 0.35) if self.state == 'down' else (0.933, 0.918, 0.886, 1)
+        RoundedRectangle:
+            size:   self.size
+            pos:    self.pos
+            radius: [dp(12), ]
+        Color:
+            rgba: (0.839, 0.541, 0.486, 1) if self.state == 'down' else (0.80, 0.76, 0.72, 0.6)
+        Line:
+            rounded_rectangle: self.x, self.y, self.width, self.height, dp(12)
+            width: 1.2
+
+
+<AvatarScreen>:
+    # ════════════════════════════════════════════════════
+    # Écran racine — Fond ivoire
+    # ════════════════════════════════════════════════════
+
+    canvas.before:
+        Color:
+            rgba: 0.992, 0.984, 0.933, 1    # #FDFBEE
+        Rectangle:
+            size: self.size
+            pos:  self.pos
+
+    BoxLayout:
+        orientation: "vertical"
+        padding:     dp(20)
+        spacing:     dp(24)
+
+        # ── 1. Titre de l'écran ──────────────────────────
+        Label:
+            id:              title_label
+            text:            "Mon Avatar"
+            font_name:       "OpenDyslexic"
+            font_size:       sp(28)
+            color:           0.15, 0.15, 0.20, 1
+            size_hint_y:     None
+            height:          dp(48)
+            halign:          "center"
+
+        # ── 2. Prévisualisation de l'avatar ─────────────
+        # (Image construite dynamiquement en Python via AvatarBuilder)
+        BoxLayout:
+            id:            avatar_preview_area
+            size_hint:     1, None
+            height:        dp(220)
+            padding:       dp(8)
+
+            canvas.before:
+                Color:
+                    rgba: 0.933, 0.918, 0.886, 1    # Fond legèrement plus sombre
+                RoundedRectangle:
+                    size:   self.size
+                    pos:    self.pos
+                    radius: [dp(20), ]
+
+            # Widget Image remplacé/mis à jour depuis Python :
+            # root.ids.avatar_preview_area.add_widget(AvatarWidget())
+            Image:
+                id:              avatar_preview
+                source:          ""              # Source initialisée en Python
+                allow_stretch:   True
+                keep_ratio:      True
+
+        # ── 3. Navigation entre catégories ──────────────
+        GridLayout:
+            id:          category_nav
+            cols:        4
+            size_hint_y: None
+            height:      dp(64)
+            spacing:     dp(8)
+
+            CategoryButton:
+                id:      btn_skin
+                text:    "👤 Peau"
+                on_press: root.select_category("skin")
+
+            CategoryButton:
+                id:      btn_hair
+                text:    "💇 Cheveux"
+                on_press: root.select_category("hair")
+
+            CategoryButton:
+                id:      btn_eyes
+                text:    "👁️ Yeux"
+                on_press: root.select_category("eyes")
+
+            CategoryButton:
+                id:      btn_clothes
+                text:    "👕 Habits"
+                on_press: root.select_category("clothes")
+
+        # ── 4. Grille de sélection couleurs/formes ──────
+        # Remplie dynamiquement depuis Python via populate_color_grid()
+        ScrollView:
+            id:              color_scroll
+            size_hint:       1, 1
+            bar_width:       dp(4)
+            bar_color:       0.80, 0.76, 0.72, 0.6
+
+            GridLayout:
+                id:              color_grid
+                cols:            5
+                size_hint_y:     None
+                height:          self.minimum_height
+                padding:         dp(12)
+                spacing:         dp(12)
+
+                # Les AvatarColorButton sont injectés dynamiquement :
+                # for hex_color in palette: color_grid.add_widget(AvatarColorButton(...))
+
+        # ── 5. Bouton de validation ──────────────────────
+        Button:
+            id:              btn_validate
+            text:            "✅ Valider mon avatar"
+            font_name:       "OpenDyslexic"
+            font_size:       sp(18)
+            size_hint_y:     None
+            height:          dp(60)
+            color:           0.992, 0.984, 0.933, 1
+            background_color: 0, 0, 0, 0
+            on_press:        root.save_avatar()
+            canvas.before:
+                Color:
+                    rgba: (0.478, 0.329, 0.227, 1) if self.state == 'down' else (0.651, 0.486, 0.322, 1)
+                RoundedRectangle:
+                    size:   self.size
+                    pos:    self.pos
+                    radius: [dp(14), ]

@@ -37,6 +37,9 @@ from screens import (
     ChildDashboardScreen,
 )
 
+# ── Imports Data Layer ─────────────────────────────────────────────────────────
+from database.supabase_client import db_manager
+
 # ══════════════════════════════════════════════════════════════════════════════
 # CHEMINS ABSOLUS
 # ══════════════════════════════════════════════════════════════════════════════
@@ -85,6 +88,99 @@ class DysApp(App):
         sm.add_widget(ChildDashboardScreen(name="child_dashboard"))
         sm.current = "splash"
         return sm
+
+    def on_start(self) -> None:
+        """Called by Kivy after build(). Safe place to trigger I/O."""
+        # db_manager.initialise() is already called at import time, but
+        # we call it here again — it is idempotent — to ensure the online
+        # state is logged after the Kivy window is fully ready.
+        db_manager.initialise()
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# BUSINESS FUNCTIONS  (SUPABASE HOOKS)
+# ══════════════════════════════════════════════════════════════════════════════
+
+def check_login(prenom: str) -> bool:
+    """
+    Verify that *prenom* exists in the ``users`` table.
+
+    Offline-First rule: if the Supabase client is unavailable, we
+    optimistically allow login so the app remains usable without network.
+
+    Args:
+        prenom: The child's first name as entered on the login screen.
+
+    Returns:
+        ``True``  — user found, or offline fallback.
+        ``False`` — user not found (online mode only).
+    """
+    # SUPABASE HOOK — Offline-First fallback
+    if not db_manager.is_online:
+        return True
+
+    try:
+        result = (
+            db_manager.client
+            .table("users")
+            .select("prenom")
+            .eq("prenom", prenom.strip().capitalize())
+            .execute()
+        )
+        return bool(result.data)
+    except Exception:  # noqa: BLE001
+        # Network error after initialisation → degrade gracefully
+        return True
+
+
+def load_user_data(prenom: str, app: "DysApp") -> None:
+    """
+    Fetch the child's progress stats from Supabase and store them on *app*.
+
+    Populates ``app.user_data`` with keys:
+        - ``prenom``      (str)  child's display name
+        - ``score_total`` (int)  cumulative score across all sessions
+        - ``sessions``    (int)  number of completed sessions
+
+    Offline-First rule: if offline, ``app.user_data`` is populated with
+    safe default values so every screen that reads it can render normally.
+
+    Args:
+        prenom: The child's first name (used as query key).
+        app:    The running ``DysApp`` instance (target for ``user_data``).
+    """
+    # SUPABASE HOOK — Offline-First defaults
+    _defaults: dict = {
+        "prenom": prenom.strip().capitalize(),
+        "score_total": 0,
+        "sessions": 0,
+    }
+
+    if not db_manager.is_online:
+        app.user_data = _defaults
+        return
+
+    try:
+        result = (
+            db_manager.client
+            .table("progress")
+            .select("score_total, sessions")
+            .eq("prenom", prenom.strip().capitalize())
+            .execute()
+        )
+        if result.data:
+            row = result.data[0]
+            app.user_data = {
+                "prenom":      prenom.strip().capitalize(),
+                "score_total": int(row.get("score_total", 0)),
+                "sessions":    int(row.get("sessions", 0)),
+            }
+        else:
+            # User exists in ``users`` but has no progress row yet
+            app.user_data = _defaults
+    except Exception:  # noqa: BLE001
+        # Network error after initialisation → fall back to defaults
+        app.user_data = _defaults
 
 
 # ══════════════════════════════════════════════════════════════════════════════
