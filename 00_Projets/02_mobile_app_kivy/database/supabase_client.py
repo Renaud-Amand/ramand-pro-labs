@@ -27,6 +27,7 @@ import os
 import sys
 from pathlib import Path
 
+
 # ---------------------------------------------------------------------------
 # UTF-8 stdout — required on Windows to avoid UnicodeEncodeError
 # ---------------------------------------------------------------------------
@@ -41,10 +42,10 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Resolve project root and .env path
 # ---------------------------------------------------------------------------
-# BASE_DIR  →  .../00_Projets/02_mobile_app_kivy/database/
-# ROOT_DIR  →  .../00_Projets/   (where .env lives)
+# BASE_DIR  →  .../02_mobile_app_kivy/database/
+# ROOT_DIR  →  .../02_mobile_app_kivy/   (where .env lives)
 BASE_DIR: Path = Path(os.path.dirname(os.path.abspath(__file__)))
-ROOT_DIR: Path = BASE_DIR.parents[1]  # two levels up from database/
+ROOT_DIR: Path = BASE_DIR.parent  # one level up from database/
 ENV_PATH: Path = ROOT_DIR / ".env"
 
 
