@@ -10,7 +10,7 @@
 
 ## 🚀 Projets Portfolio
 
-### 🚒 [IGNIS — Système IA de transmission d'incidents Seveso](./01_Portfolio/ignis/)
+### 🚒 [IGNIS — Système IA de transmission d'incidents Seveso](./01_Portfolios/ignis/)
 > Système d'alerte et de diffusion temps réel pour sites industriels classés Seveso seuil haut
 
 **Problème résolu** : Sur un site Seveso, l'information critique arrive au compte-goutte pendant qu'une équipe est déjà en route. Le chef de garde gère seul la nuit : son équipe, la direction, le SDIS. La transmission aux pompiers extérieurs est verbale, fragmentée, dépendante du stress.
@@ -18,7 +18,7 @@
 **Solution** : Agent IA qui génère une fiche incident structurée en < 30 secondes et la diffuse simultanément — équipe interne, direction en astreinte, tablette du chef d'agrès SDIS.
 
 **Stack** : Claude API · n8n · Supabase pgvector · LlamaParse · PWA  
-**Statut** : 🟡 En construction — Sprint 0
+**Statut** : 🟡 En construction — Sprint 1
 
 ---
 
@@ -38,8 +38,8 @@ La plupart des architectes IA viennent du dev. Moi je viens du terrain.
 
 ## 📚 Parcours d'apprentissage
 
-### 🐍 [02_Apprentissage/](./02_Apprentissage/)
-Bases construites à la main — Python, logique de programmation, premiers scripts.  
+### [02_Archives_Apprentissage/](./02_Archives_Apprentissage/)
+Bases construites à la main — Python, logique de programmation, premiers scripts, documentation personnelle.  
 Pas des tutos copiés : du code écrit, cassé, corrigé, compris.
 
 **Ce qui y est visible :**
@@ -47,6 +47,7 @@ Pas des tutos copiés : du code écrit, cassé, corrigé, compris.
 - Outils de calcul et automatisation
 - Premiers scripts d'analyse de données
 - Expérimentations app mobile (Kivy)
+- Documentation et notes d'apprentissage
 
 > *C'est volontairement public. Montrer d'où on part fait partie du portfolio.*
 
@@ -56,11 +57,10 @@ Pas des tutos copiés : du code écrit, cassé, corrigé, compris.
 
 ```
 ramand-pro-labs/
-├── 01_Portfolio/          → Projets portfolio (impact réel, documentés)
-│   └── ignis/             → Projet #1 : système IA incidents Seveso
-├── 02_Apprentissage/      → Bases Python, prototypes, expérimentations  
-├── 03_Documentation/      → Notes, références, documentation personnelle
-└── README.md              → Cette page
+├── 01_Portfolios/             → Projets portfolio (impact réel, documentés)
+│   └── ignis/                → Projet #1 : système IA incidents Seveso
+├── 02_Archives_Apprentissage/ → Bases Python, prototypes, doc personnelle
+└── README.md                  → Cette page
 ```
 
 ---
