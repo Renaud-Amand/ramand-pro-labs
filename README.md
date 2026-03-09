@@ -36,6 +36,21 @@ La plupart des architectes IA viennent du dev. Moi je viens du terrain.
 
 ---
 
+## 🌱 Pourquoi j'ai commencé à coder
+
+Ma fille de 5 ans a des difficultés à assimiler les sons, les lettres, les associations visuelles.
+
+Mon premier projet — avant toute reconversion, avant tout plan de carrière — c'était un jeu éducatif en Python (Pygame) pour l'aider : lettres, sons, images associées, feux d'artifice de récompense à la fin. Pas un projet professionnel. Un projet de père.
+
+Ce prototype m'a donné envie d'aller plus loin : le passer sur mobile (Kivy), puis imaginer un outil qui pourrait aider d'autres enfants à traiter la dyslexie.
+
+**Ce projet m'a appris une chose essentielle** : un bon outil part toujours d'un vrai problème vécu — pas d'une spécification.  
+C'est ce principe que j'applique à chaque projet depuis.
+
+> *Le prototype est dans [`02_Archives_Apprentissage/`](./02_Archives_Apprentissage/) — inachevé, imparfait, et volontairement public.*
+
+---
+
 ## 📚 Parcours d'apprentissage
 
 ### [02_Archives_Apprentissage/](./02_Archives_Apprentissage/)
@@ -43,9 +58,9 @@ Bases construites à la main — Python, logique de programmation, premiers scri
 Pas des tutos copiés : du code écrit, cassé, corrigé, compris.
 
 **Ce qui y est visible :**
+- 🎮 Jeu éducatif Pygame pour ma fille (dyslexie) — prototype fondateur
 - Simulateur technique (modélisation flux industriels)
 - Outils de calcul et automatisation
-- Premiers scripts d'analyse de données
 - Expérimentations app mobile (Kivy)
 - Documentation et notes d'apprentissage
 
