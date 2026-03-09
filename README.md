@@ -1,44 +1,84 @@
-# 🚀 Renaud Amand | Architecte Système & Solutions Python
-> **Transformer la complexité technique en outils numériques performants.**
+# Renaud Amand — AI Architect & Product Owner
 
-Conducteur poid lourds et anciennement Sapeur-Pompier, je mets aujourd'hui ma rigueur d'Architecte de l'IA au service du développement Python. Je conçois des outils sur mesure pour automatiser des calculs complexes et analyser des données stratégiques.
+> Ancien pompier industriel Seveso · Conducteur PL · En reconversion vers l'architecture IA  
+> Je conçois des systèmes IA qui résolvent de vrais problèmes terrain — pas des démos.
 
----
-
-## 🛠️ Solutions Développées (Portfolio)
-
-### 🏗️ Ingénierie & Simulation
-* **Simulateur Technique (`Simulateur_vap.py`) :** Modélisation de flux et calculs de paramètres industriels.
-* **Analyseur de Données :** Automatisation du traitement de datasets pour l'aide à la décision.
-
-### ⚙️ Automatisation & Logique
-* **Suite d'outils de calcul :** Optimisation de processus (budgets, conversions, scoring).
-* **Labo R&D :** Recherche active sur l'intégration de l'IA dans les flux de travail "métier".
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Renaud%20Amand-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/renaud-amand-5803283b0/)
+[![Email](https://img.shields.io/badge/Email-ramand.pro%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:ramand.pro@gmail.com)
 
 ---
 
-## 🎯 Pourquoi travailler avec moi ?
-- **Double Expertise :** La vision structurelle de l'architecte alliée à la puissance de Python.
-- **Approche Orientée Résultat :** Je ne crée pas de fichiers, je crée des outils qui font gagner du temps.
-- **Rigueur & Documentation :** Code propre, maintenable et documenté.
+## 🚀 Projets Portfolio
+
+### 🚒 [IGNIS — Système IA de transmission d'incidents Seveso](./01_Portfolio/ignis/)
+> Système d'alerte et de diffusion temps réel pour sites industriels classés Seveso seuil haut
+
+**Problème résolu** : Sur un site Seveso, l'information critique arrive au compte-goutte pendant qu'une équipe est déjà en route. Le chef de garde gère seul la nuit : son équipe, la direction, le SDIS. La transmission aux pompiers extérieurs est verbale, fragmentée, dépendante du stress.
+
+**Solution** : Agent IA qui génère une fiche incident structurée en < 30 secondes et la diffuse simultanément — équipe interne, direction en astreinte, tablette du chef d'agrès SDIS.
+
+**Stack** : Claude API · n8n · Supabase pgvector · LlamaParse · PWA  
+**Statut** : 🟡 En construction — Sprint 0
 
 ---
 
-## 💻 Stack Technique
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
+## 🧠 Pourquoi ce profil est différent
+
+La plupart des architectes IA viennent du dev. Moi je viens du terrain.
+
+| Background | Ce que ça apporte en IA |
+|---|---|
+| Pompier industriel Seveso | Gestion de risque critique → AI Safety, guardrails, systèmes critiques |
+| Conducteur PL | Logistique complexe → optimisation workflows, supply chain IA |
+| Zéro formation classique | Apprentissage par le build — chaque projet est une preuve |
+
+> **Mon angle** : concevoir des systèmes IA pour des environnements à fort enjeu, là où l'erreur coûte cher.
 
 ---
 
-## 📬 Contact & Veille
-* **Profil :** Renaud Amand
-* **Objectif :** Architecture Système & Intégration IA
-* **Actuellement :** En spécialisation Architecture IA | Disponible pour projets d'automatisation.
+## 📚 Parcours d'apprentissage
+
+### 🐍 [02_Apprentissage/](./02_Apprentissage/)
+Bases construites à la main — Python, logique de programmation, premiers scripts.  
+Pas des tutos copiés : du code écrit, cassé, corrigé, compris.
+
+**Ce qui y est visible :**
+- Simulateur technique (modélisation flux industriels)
+- Outils de calcul et automatisation
+- Premiers scripts d'analyse de données
+- Expérimentations app mobile (Kivy)
+
+> *C'est volontairement public. Montrer d'où on part fait partie du portfolio.*
+
+---
+
+## 📁 Structure du repo
+
+```
+ramand-pro-labs/
+├── 01_Portfolio/          → Projets portfolio (impact réel, documentés)
+│   └── ignis/             → Projet #1 : système IA incidents Seveso
+├── 02_Apprentissage/      → Bases Python, prototypes, expérimentations  
+├── 03_Documentation/      → Notes, références, documentation personnelle
+└── README.md              → Cette page
+```
+
+---
+
+## 🛠️ Stack maîtrisée
+
+![Claude API](https://img.shields.io/badge/Claude%20API-Anthropic-orange?style=flat-square)
+![n8n](https://img.shields.io/badge/n8n-Automation-red?style=flat-square)
+![Supabase](https://img.shields.io/badge/Supabase-pgvector-green?style=flat-square)
+![Python](https://img.shields.io/badge/Python-3670A0?style=flat-square&logo=python&logoColor=ffdd54)
+![Git](https://img.shields.io/badge/Git-F05033?style=flat-square&logo=git&logoColor=white)
+
+**En cours d'acquisition** : Architecture agents · RAG · MCP Servers · System design
 
 ---
 
 ## 📬 Me contacter
-Pour discuter d'une collaboration ou de l'automatisation de vos flux de travail :
 
-[![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/renaud-amand-5803283b0/)
-[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:ramand.pro@gmail.com)
+Pour discuter d'un projet, d'une collaboration, ou d'un poste en architecture IA :
+
+→ [LinkedIn](https://www.linkedin.com/in/renaud-amand-5803283b0/) · [ramand.pro@gmail.com](mailto:ramand.pro@gmail.com)
