@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.kivy
+.kivy/
+data/user_progress.json
+assets/audio/*.mp3

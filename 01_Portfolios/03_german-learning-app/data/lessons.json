@@ -1,0 +1,252 @@
+{
+  "lessons": [
+    {
+      "id": "lesson_1",
+      "title": "Véhicule Pro",
+      "subtitle": "Camion, remorque, route",
+      "category": "routier",
+      "icon": "🚛",
+      "xp": 50,
+      "exercises": [
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Camion",
+          "answer_de": "Lastwagen",
+          "hint": "Le gros véhicule de transport"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Remorque",
+          "options": ["Anhänger", "Wagen", "Traktor", "Bremse"],
+          "answer": "Anhänger"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Freins",
+          "answer_de": "Bremsen",
+          "hint": "Essentiel pour s'arrêter"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Carburant",
+          "options": ["Kraftstoff", "Wasser", "Öl", "Gas"],
+          "answer": "Kraftstoff"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Ceinture de sécurité",
+          "answer_de": "Sicherheitsgurt",
+          "hint": "Obligatoire en cabine"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Roue",
+          "options": ["Rad", "Boden", "Achse", "Luft"],
+          "answer": "Rad"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Rétroviseur",
+          "answer_de": "Spiegel",
+          "hint": "Pour voir derrière"
+        }
+      ]
+    },
+    {
+      "id": "lesson_2",
+      "title": "Douane & Documents",
+      "subtitle": "Contrôle douanier, papiers",
+      "category": "routier",
+      "icon": "🛃",
+      "xp": 50,
+      "exercises": [
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Douane",
+          "answer_de": "Zoll",
+          "hint": "Contrôle à la frontière"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Documents",
+          "options": ["Dokumente", "Briefe", "Karten", "Noten"],
+          "answer": "Dokumente"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Contrôle",
+          "answer_de": "Kontrolle",
+          "hint": "Inspection officielle"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Déclaration",
+          "options": ["Erklärung", "Frage", "Antwort", "Brief"],
+          "answer": "Erklärung"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Vignette (Suisse)",
+          "answer_de": "Jahresvignette",
+          "hint": "Obligatoire sur autoroute en CH"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Passeport",
+          "options": ["Pass", "Buch", "Karte", "Zettel"],
+          "answer": "Pass"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Inspection",
+          "answer_de": "Inspektion",
+          "hint": "Vérification officielle"
+        }
+      ]
+    },
+    {
+      "id": "lesson_3",
+      "title": "Entretien d'Embauche",
+      "subtitle": "Chercher un emploi en Suisse",
+      "category": "entreprise",
+      "icon": "💼",
+      "xp": 60,
+      "exercises": [
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Expérience",
+          "answer_de": "Erfahrung",
+          "hint": "Ton parcours professionnel"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Emploi / Poste",
+          "options": ["Stelle", "Zimmer", "Platz", "Raum"],
+          "answer": "Stelle"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Salaire",
+          "answer_de": "Gehalt",
+          "hint": "La rémunération mensuelle"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Contrat",
+          "options": ["Vertrag", "Brief", "Liste", "Plan"],
+          "answer": "Vertrag"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Compétence",
+          "answer_de": "Fähigkeit",
+          "hint": "Ce que tu sais faire"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Responsabilité",
+          "options": ["Verantwortung", "Arbeit", "Zeit", "Geld"],
+          "answer": "Verantwortung"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Entretien (réunion)",
+          "answer_de": "Gespräch",
+          "hint": "Une conversation formelle"
+        }
+      ]
+    },
+    {
+      "id": "lesson_4",
+      "title": "Réunion & Bureau",
+      "subtitle": "Communication en entreprise",
+      "category": "entreprise",
+      "icon": "🤝",
+      "xp": 55,
+      "exercises": [
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Réunion",
+          "answer_de": "Besprechung",
+          "hint": "Rencontre professionnelle"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Collègue",
+          "options": ["Kollege", "Chef", "Kunde", "Freund"],
+          "answer": "Kollege"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Chef / Responsable",
+          "answer_de": "Vorgesetzter",
+          "hint": "Ton supérieur hiérarchique"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Présentation",
+          "options": ["Präsentation", "Bericht", "Liste", "Brief"],
+          "answer": "Präsentation"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Pause",
+          "answer_de": "Pause",
+          "hint": "Identique en français !"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Bureau",
+          "options": ["Büro", "Zimmer", "Raum", "Platz"],
+          "answer": "Büro"
+        }
+      ]
+    },
+    {
+      "id": "lesson_5",
+      "title": "Sécurité Routière",
+      "subtitle": "Règles et urgences sur la route",
+      "category": "routier",
+      "icon": "⚠️",
+      "xp": 55,
+      "exercises": [
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Vitesse maximale",
+          "answer_de": "Höchstgeschwindigkeit",
+          "hint": "La limite à ne pas dépasser"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Accident",
+          "options": ["Unfall", "Panne", "Stau", "Kurve"],
+          "answer": "Unfall"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Urgence",
+          "answer_de": "Notfall",
+          "hint": "Situation critique"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Repos obligatoire",
+          "options": ["Pflichtpause", "Urlaub", "Schlaf", "Ruhe"],
+          "answer": "Pflichtpause"
+        },
+        {
+          "type": "translate_fr_to_de",
+          "question_fr": "Permis de conduire",
+          "answer_de": "Führerschein",
+          "hint": "Document pour conduire légalement"
+        },
+        {
+          "type": "select_de_from_fr",
+          "question_fr": "Signalisation",
+          "options": ["Beschilderung", "Straße", "Boden", "Licht"],
+          "answer": "Beschilderung"
+        }
+      ]
+    }
+  ]
+}
